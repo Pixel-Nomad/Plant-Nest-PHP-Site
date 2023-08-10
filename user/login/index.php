@@ -1,9 +1,45 @@
 <?php
     require ('../../config.php'); 
     session_start();
+    if (!isset($_SESSION['isLoggedin'])){
     session_unset();
     session_destroy();
     $connection = mysqli_connect($config['DB_URL'],$config['DB_USERNAME'],$config['DB_PASSWORD'],$config['DB_DATABASE']);
+    if (isset($_POST['submit'])&&isset($_POST['email']) && isset($_POST['password'])){
+        $email    = $_POST['email'];
+        $password = strval($_POST['password']);
+        $encrypt  = sha1($password);
+        if (strlen($password) >= 6){
+          $sql = "SELECT * FROM `users` WHERE `email`= '$email' AND `password`='$encrypt'";
+      
+          $result = mysqli_query($connection,$sql);
+        
+          $total  = mysqli_num_rows($result);
+        
+          if ($total == 1) {
+                session_start();
+              while ($row = mysqli_fetch_assoc($result)) {
+                  $_SESSION['user-id'] = $row['user_id'];
+                  $_SESSION['user-username'] = $row['username'];
+                  $_SESSION['user-fullname'] = $row['fullname'];
+                  $_SESSION['user-email'] = $row['email'];
+                  $_SESSION['user-contact'] = $row['contact'];
+                  $_SESSION['user-role'] = $row['role'];
+                  $_SESSION['user-company'] = $row['company'];
+                  $_SESSION['user-address'] = $row['address'];
+                  $_SESSION['user-country'] = $row['country'];
+                  $_SESSION['user-city'] = $row['city'];
+              }
+              $_SESSION['email'] = $email;
+              $_SESSION['isLoggedin'] = true;
+              header('location: '.$config['URL']);
+              exit();
+          }
+          }
+      }
+      } else {
+          header('location: '.$config['URL']);
+      }
 ?>
 
 
@@ -17,6 +53,75 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">
+                <img src='<?php echo $config['URL']?>/assets/image/logos/logo7.png' alt="Site Logo" width="50">
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link text-light" href="#">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-light" href="#">Category</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-light" href="#">About Us</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-light" href="#">Contact Us</a>
+                    </li>
+                    <li class="nav-item">
+                        <?php
+                            if (isset($_SESSION['isLoggedin'])){
+                                if ($_SESSION['user-role'] != 'user') {
+                        ?>
+                            <a class="nav-link text-light" href="#">Admin Login</a>
+                        <?php
+                                }
+                            } 
+                        ?>
+                    </li>
+                </ul>
+                <?php
+                if (isset($_SESSION['isLoggedin'])){
+                ?>
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">
+                            <i class="fas fa-shopping-cart"></i>
+                        </a>
+                    </li>
+                    <li class="nav-item dropdown pe-5">
+                        <a class="nav-link dropdown-toggle" href="#" id="profileDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fas fa-user-circle"></i>
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="profileDropdown">
+                            <li><a class="dropdown-item" href='<?php echo $config['URL']?>/user/settings'>Settings</a></li>
+                            <li><a class="dropdown-item" href='<?php echo $config['URL']?>/user/logout'>Logout</a></li>
+                        </ul>
+                    </li>
+                </ul>
+                <?php
+                    } else {
+                ?>
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link text-light" href='<?php echo $config['URL']?>/user/register'>Sign up</a>
+                    </li>
+                </ul>
+                
+                <?php
+                    }
+                ?>
+                
+            </div>
+        </div>
+    </nav>
     <div class="container">
         <img src='<?php echo $config['URL']?>/assets/image/logos/logo8.png' class="rounded mx-auto d-block" alt="..." onclick="redirect('<?php echo $config['URL']?>')">
         <div class="row row-cols-1 row-cols-md-3 m-4">
@@ -95,32 +200,3 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
 </body>
 </html>
-
-<?php
-
-if (isset($_POST['submit'])&&isset($_POST['email']) && isset($_POST['password'])){
-  $email    = $_POST['email'];
-  $password = strval($_POST['password']);
-  $encrypt  = sha1($password);
-  if (strlen($password) >= 6){
-    $sql = "SELECT * FROM `users` WHERE `email`= '$email' AND `password`='$encrypt'";
-
-    $result = mysqli_query($connection,$sql);
-  
-    $total  = mysqli_num_rows($result);
-  
-    if ($total == 1) {
-        session_start();
-        $_SESSION['email'] = $email;
-        header('location: '.$config['URL']);
-        exit();
-    }
-    }
-  ?>
-<!-- //   else {
-//     <script>alert('Incorrect Email or Password')</script>
-//   } -->
-<?php
-}
-
-?>
