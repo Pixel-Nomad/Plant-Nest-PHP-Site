@@ -33,8 +33,23 @@
                     <li class="nav-item">
                         <a class="nav-link text-light" href="#">Home</a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-light" href="#">Category</a>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle text-light" href="#" id="navbarDarkDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Products
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="navbarDarkDropdownMenuLink">
+                            <?php
+                                $sql = "SELECT * FROM `category`";
+                                $result = mysqli_query($connection,$sql);
+                                $total  = mysqli_num_rows($result);
+                                if ($total >= 1) {
+                                    while ($row = mysqli_fetch_assoc($result)) {
+                                        echo '<li><a class="dropdown-item" href="'.$config['URL'].'/products?id='.$row['category_id'].'">'.$row['Name'].'</a></li>';
+                                    }
+                                }
+                                echo '<li><a class="dropdown-item" href="'.$config['URL'].'/products?id=0">Accessories</a></li>';
+                            ?>
+                        </ul>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link text-light" href="#">About Us</a>
@@ -179,9 +194,13 @@
                                 </div>
                                 <hr class="divider" />
                                 <p class="text-success">$'.$row['price'].'</p>
-                                <div class="d-grid gap-2">
-                                    <button class="btn btn-secondary" type="button">Add To Cart</button>
-                                    <button class="btn btn-secondary" type="button">Wishlist</button>
+                                <div class="d-grid gap-2">';
+                                    if ($row['quantity'] >= 1){
+                                    echo '<button class="btn btn-secondary" type="button">Add To Cart</button>';
+                                    } else {
+                                        echo '<h3 class="text-center">SOLD OUT</h3>';
+                                    }
+                                    echo'<button class="btn btn-secondary" type="button">Wishlist</button>
                                 </div>
                             </div>
                         </div>';

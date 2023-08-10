@@ -45,14 +45,37 @@
             $password    = strval($_POST['password']);
             $encrypt     = sha1($password);
             $id = $_SESSION['user-id'];
-            $sql = "SELECT * FROM `users` WHERE `user_id`= '$id' AND `password` = '$encrypt'";
-            $result = mysqli_query($connection,$sql);
-            $total  = mysqli_num_rows($result);
-            if ($total == 1) {
-                if (strlen($password) >= 6){
-                    // 
+            if (strlen($password) >= 6) {
+                $sql2 = "SELECT * FROM `users` WHERE `user_id`= '$id' AND `password` = '$encrypt'";
+                $result2 = mysqli_query($connection,$sql2);
+                $total  = mysqli_num_rows($result2);
+                $unique      = true;
+                if ($_SESSION['user-username'] != $_POST['username']) {
+                    $username    = $_POST['username'];
+                    echo $username;
+                    $search      = "SELECT * FROM users WHERE username = '".$username."'";
+                    $result      = mysqli_query($connection, $search);
+                    echo $total;
+                    if ($result) {
+                        while ($row = mysqli_fetch_assoc($result)) {
+                            if ($row['username'] == $username){
+                                $unique = false;
+                            }
+                        }
+                    }
+                }
+                $username    = $_POST['username'];
+                    echo $username;
+                if ($total == 1 && $unique){
+                    $username    = $_POST['username'];
+                    echo $username;
+                    $sql = "SELECT * FROM `users` WHERE `user_id`= '$id' AND `password` = '$encrypt'";
+                    $result = mysqli_query($connection,$sql);
+                    $total  = mysqli_num_rows($result);
                     $sql2 = "UPDATE `users` SET 
                     `username`='".
+                    (($_SESSION['user-username'] != $_POST['username']) ? $_POST['username'] : $_SESSION['user-username'])
+                    ."',`fullname`='".
                     (($_SESSION['user-fullname'] != $_POST['fullname']) ? $_POST['fullname'] : $_SESSION['user-fullname'])
                     ."',`contact`='".
                     (($_SESSION['user-contact'] != $_POST['contact']) ? $_POST['contact'] : $_SESSION['user-contact'])
@@ -68,6 +91,9 @@
                     $_SESSION['user-fullname'] = $_SESSION['user-fullname'];
                     $result2 = mysqli_query($connection,$sql2);
                     if ($result2) {
+                        echo $_SESSION['user-username'];
+                        echo $_POST['username'];
+                        $_SESSION['user-username'] = ($_SESSION['user-username'] != $_POST['username']) ? $_POST['username'] : $_SESSION['user-username'];
                         $_SESSION['user-fullname'] = ($_SESSION['user-fullname'] != $_POST['fullname']) ? $_POST['fullname'] : $_SESSION['user-fullname'];
                         $_SESSION['user-contact'] = ($_SESSION['user-contact'] != $_POST['contact']) ? $_POST['contact'] : $_SESSION['user-contact'];
                         $_SESSION['user-company'] = ($_SESSION['user-company'] != $_POST['comapny']) ? $_POST['comapny'] : $_SESSION['user-company'];
@@ -116,7 +142,7 @@
                         <a class="nav-link text-light" href="#">Home</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link text-light" href="#">Category</a>
+                        <a class="nav-link text-light" href="#">Products</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link text-light" href="#">About Us</a>
@@ -204,6 +230,28 @@
                         <div class="card-body">
                             <div class="row row-cols-1 row-cols-md-1 m-4">
                                 <div class="col">
+                                    <div class="form-floating mb-3">
+                                        <input type="text" class="form-control" value='<?php echo $email=$_SESSION['user-username'];?>' required name="username" id="floatingInput" placeholder="name@example.com">
+                                        <label for="floatingInput">User Name</label>
+                                        <p class="card-text text-danger"><?php
+                                        if (isset($_POST['submit'])) {
+                                            $username       = $_POST['username'];
+                                            $search      = "SELECT * FROM users WHERE username='".$username."'";
+                                            $result      = mysqli_query($connection, $search);
+                                            $unique      = true;
+                                            if ($result) {
+                                            while ($row = mysqli_fetch_assoc($result)) {
+                                                if ($row['username'] == $username){
+                                                $unique = false;
+                                                }
+                                            }
+                                            }
+                                            if (!$unique) {
+                                            echo 'Username Already Taken';
+                                            }
+                                        }
+                                        ?></p>
+                                    </div>
                                     <div class="form-floating mb-3">
                                         <input type="text" class="form-control" value='<?php echo $email=$_SESSION['user-fullname'];?>' required name="fullname" id="floatingInput" placeholder="name@example.com">
                                         <label for="floatingInput">Full Name</label>
@@ -511,6 +559,30 @@
                                     <div class="form-floating mb-3">
                                         <input type="password" class="form-control" required name="password3" id="floatingInput" placeholder="name@example.com">
                                         <label for="floatingInput">Enter Current Password</label>
+                                        <p class="card-text text-danger"><?php
+                                        if (isset($_POST['submit2'])&&isset($_POST['password3'])) {
+                                            $email       = $_SESSION['user-email'];
+                                            $password    = strval($_POST['password3']);
+                                            if (strlen($password3) >= 6){
+                                                $search      = "SELECT * FROM users WHERE email='".$email."'";
+                                                $result      = mysqli_query($connection, $search);
+                                                $unique      = true;
+                                                $encrypt     = sha1($password);
+                                                if ($result) {
+                                                    while ($row = mysqli_fetch_assoc($result)) {
+                                                    if ($row['password'] == sha1($password)){
+                                                        $unique = false;
+                                                    }
+                                                    }
+                                                }
+                                                if ($unique) {
+                                                    echo 'Password Incorrect';
+                                                }
+                                            } else {
+                                                echo 'Password Must Be 6 Character Long';
+                                            }
+                                        }
+                                        ?></p>
                                     </div>
                                     <div class="form-floating mb-3">
                                         <input type="password" class="form-control" required name="password" id="floatingInput" placeholder="name@example.com">
@@ -519,6 +591,19 @@
                                     <div class="form-floating mb-3">
                                         <input type="password" class="form-control" required name="password2" id="floatingInput" placeholder="name@example.com">
                                         <label for="floatingInput">Re-Enter New Password</label>
+                                        <p class="card-text text-danger"><?php
+                                        if (isset($_POST['submit2']) && isset($_POST['password'])) {
+                                            $password    = strval($_POST['password']);
+                                            $password2   = strval($_POST['password2']);
+                                            if (strlen($password) >= 6){
+                                            if (!($password == $password2)) {
+                                                echo 'Password Not Match';
+                                            }
+                                            } else {
+                                            echo 'Password Must be 6 Characters long';
+                                            }
+                                        }
+                                        ?></p>
                                     </div>
                                 </div>
                             </div>

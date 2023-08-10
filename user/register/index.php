@@ -21,7 +21,7 @@ if ($connection) {
       if (strlen($password) >= 6){
         $password2   = strval($_POST['password2']);
         $encrypt     = sha1($password);
-        $search      = "SELECT * FROM users WHERE email='".$email."' OR '".$username."'";
+        $search      = "SELECT * FROM users WHERE email='".$email."' OR username ='".$username."'";
         $result      = mysqli_query($connection, $search);
         $unique      = true;
         $unique2     = true;
@@ -82,7 +82,7 @@ exit();
                         <a class="nav-link text-light" href="#">Home</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link text-light" href="#">Category</a>
+                        <a class="nav-link text-light" href="#">Products</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link text-light" href="#">About Us</a>

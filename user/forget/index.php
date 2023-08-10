@@ -143,7 +143,7 @@
                         <a class="nav-link text-light" href="#">Home</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link text-light" href="#">Category</a>
+                        <a class="nav-link text-light" href="#">Products</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link text-light" href="#">About Us</a>
