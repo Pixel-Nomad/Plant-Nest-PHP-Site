@@ -270,7 +270,7 @@
                                     </div>
                                     <div class="form-floating mb-3">
                                         <select class="form-select" name="country" id="floatingCountry">
-                                            <option value="" disabled selected>Select your country</option>
+                                            <option value="<?php echo $email=$_SESSION['user-country'];?>" disabled selected>Select your country</option>
                                             <option>select country</option>
                                             <option value="AF">Afghanistan</option>
                                             <option value="AX">Aland Islands</option>

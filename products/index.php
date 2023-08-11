@@ -2,6 +2,14 @@
     require ('../config.php'); 
     session_start();
     $connection = mysqli_connect($config['DB_URL'],$config['DB_USERNAME'],$config['DB_PASSWORD'],$config['DB_DATABASE']);
+    if (isset($_POST['submit']) && isset($_POST['plant_id'])){
+        if (isset($_SESSION['isLoggedin'])){
+
+        } else {
+            header('location: '. $config['URL'].'/user/login');
+            exit();
+        }
+    }
 ?>
 
 <!DOCTYPE html>
@@ -33,6 +41,9 @@
                     <li class="nav-item">
                         <a class="nav-link text-light" href="#">Home</a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-light" href="#">About Us</a>
+                    </li>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle text-light" href="#" id="navbarDarkDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                             Products
@@ -43,6 +54,7 @@
                                 $result = mysqli_query($connection,$sql);
                                 $total  = mysqli_num_rows($result);
                                 if ($total >= 1) {
+                                    echo '<li><a class="dropdown-item" href="'.$config['URL'].'/products">All Products</a></li>';
                                     while ($row = mysqli_fetch_assoc($result)) {
                                         echo '<li><a class="dropdown-item" href="'.$config['URL'].'/products?id='.$row['category_id'].'">'.$row['Name'].'</a></li>';
                                     }
@@ -50,9 +62,6 @@
                                 echo '<li><a class="dropdown-item" href="'.$config['URL'].'/products?id=0">Accessories</a></li>';
                             ?>
                         </ul>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-light" href="#">About Us</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link text-light" href="#">Contact Us</a>
@@ -108,7 +117,13 @@
         </div>
     </nav>
     <?php
-        $sql = 'SELECT * FROM `plants`'
+        $query = "SELECT * FROM `plants`";
+        if (isset($_GET['id']) && is_numeric($_GET['id'])){
+            $id = (int)$_GET['id'];
+            $query .= "WHERE `category_id` =$id";
+        }
+        $result = mysqli_query($connection,$query);
+        $total  = mysqli_num_rows($result);
     ?>
     <div class="container">
         <div class="row row-cols-1 row-cols-md-2 m-4">
@@ -117,19 +132,67 @@
             </div>
             <div class="col">
                 <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                    <h4 class="fs-5 pt-2"><?php echo $total.' items'?></h4>
                     <div class="dropdown">
                         <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton2" data-bs-toggle="dropdown" aria-expanded="false">
                             Products
                         </button>
                         <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="dropdownMenuButton2">
-                            <li><a class="dropdown-item active" href="#">Action</a></li>
-                            <li><a class="dropdown-item" href="#">Another action</a></li>
-                            <li><a class="dropdown-item" href="#">Something else here</a></li>
+                            <?php
+                                $sql2 = "SELECT * FROM `category`";
+                                $result2 = mysqli_query($connection,$sql2);
+                                $total2  = mysqli_num_rows($result2);
+                                echo '<li><a class="dropdown-item" href="'.$config['URL'].'/products">All Products</a></li>';
+                                if ($total2 >= 1) {
+                                    while ($row = mysqli_fetch_assoc($result2)) {
+                                        echo '<li><a class="dropdown-item" href="'.$config['URL'].'/products?id='.$row['category_id'].'">'.$row['Name'].'</a></li>';
+                                    }
+                                }
+                                echo '<li><a class="dropdown-item" href="'.$config['URL'].'/products?id=0">Accessories</a></li>';
+                            ?>
                         </ul>
                     </div>
                 </div>
-
             </div>
+        </div>
+        <div class="row row-cols-1 row-cols-md-3 m-4">
+            <?php
+                if ($total >= 1) {
+                    while ($row = mysqli_fetch_assoc($result)) {
+                        echo '<div class="col">
+                                <div class="card addHover p-3 mb-5 bg-gradient rounded">
+                                    <img src="'.$row['image'].'" class="card-img-top image-fluid" alt="Painting"/>
+                                    <div class="card-body">
+                                        <h5 class="card-title text-center">'.$row['name'].'</h5>
+                                        <p class="card-text">'.$row['description'].'</p>
+                                    </div>
+                                    <hr class="divider" />
+                                    <div class="row">
+                                        <div class="col">
+                                            <p class="fw-bold">Available:</p>
+                                            <p class="fw-bold">Price:</p>
+                                        </div>
+                                        <div class="col">
+                                            <p class="fw-normal">'.$row['quantity'].'</p>
+                                            <p class="fw-normal text-success">$'.$row['price'].'</p>
+                                        </div>
+                                    </div>
+                                    <hr class="divider" />
+                                    <div >';
+                                        if ($row['quantity'] >= 1){
+                                            echo '<form method="post" class="d-grid gap-2 col-6 mx-auto">
+                                                <input type="text" class="d-none" name="plant_id" value="'.$row['plant_id'].'">
+                                                <input type="submit" class="btn btn-secondary" name="submit" value="Add To Cart">
+                                            </form>';
+                                        } else {
+                                            echo '<h3 class="text-center">SOLD OUT</h3>';
+                                        }
+                                    echo '</div>
+                                </div>
+                            </div>';
+                    }
+                }
+            ?>
         </div>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>

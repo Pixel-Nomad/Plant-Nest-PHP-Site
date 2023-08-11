@@ -91,7 +91,7 @@
         if (isset($_POST['submit3']) && isset($_POST['password'])) {
             $password    = strval($_POST['password']);
             if (strlen($password) >= 6){
-                $password2   = sctrval($_POST['password2']);
+                $password2   = strval($_POST['password2']);
                 $encrypt     = sha1($password);
                 if ($password == $password2) {
                     $email   = $_SESSION['forget-email'];

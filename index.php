@@ -2,6 +2,14 @@
     require ('./config.php'); 
     session_start();
     $connection = mysqli_connect($config['DB_URL'],$config['DB_USERNAME'],$config['DB_PASSWORD'],$config['DB_DATABASE']);
+    if (isset($_POST['submit']) && isset($_POST['plant_id'])){
+        if (isset($_SESSION['isLoggedin'])){
+
+        } else {
+            header('location: '. $config['URL'].'/user/login');
+            exit();
+        }
+    }
 ?>
 
 <!DOCTYPE html>
@@ -190,18 +198,29 @@
                                 alt="'.$row['image'].'" />
                                 <div class="card-body">
                                     <h5 class="card-title text-center">'.$row['name'].'</h5>
-                                    <h5 class="card-text text-center">'.$row['description'].'</h5>
                                 </div>
                                 <hr class="divider" />
-                                <p class="text-success">$'.$row['price'].'</p>
-                                <div class="d-grid gap-2">';
+                                <div class="row">
+                                    <div class="col">
+                                        <p class="fw-bold">Available:</p>
+                                        <p class="fw-bold">Price:</p>
+                                    </div>
+                                    <div class="col">
+                                        <p class="fw-normal">'.$row['quantity'].'</p>
+                                        <p class="fw-normal text-success">$'.$row['price'].'</p>
+                                    </div>
+                                </div>
+                                <hr class="divider" />
+                                <div>';
                                     if ($row['quantity'] >= 1){
-                                    echo '<button class="btn btn-secondary" type="button">Add To Cart</button>';
+                                    echo '<form method="post" class="d-grid gap-2 col-6 mx-auto">
+                                            <input type="text" class="d-none" name="plant_id" value="'.$row['plant_id'].'">
+                                            <input type="submit" class="btn btn-secondary" name="submit" value="Add To Cart">
+                                    </form>';
                                     } else {
                                         echo '<h3 class="text-center">SOLD OUT</h3>';
                                     }
-                                    echo'<button class="btn btn-secondary" type="button">Wishlist</button>
-                                </div>
+                                echo'</div>
                             </div>
                         </div>';
                 }
