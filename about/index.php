@@ -25,16 +25,32 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav me-auto">
                     <li class="nav-item">
-                        <a class="nav-link text-light" href="#">Home</a>
+                        <a class="nav-link text-light" href='<?php echo $config['URL']?>/'>Home</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link text-light" href="#">Products</a>
+                        <a class="nav-link text-light" href='<?php echo $config['URL']?>/about'>About Us</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle text-light" href="#" id="navbarDarkDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Products
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="navbarDarkDropdownMenuLink">
+                            <?php
+                                $sql = "SELECT * FROM `category`";
+                                $result = mysqli_query($connection,$sql);
+                                $total  = mysqli_num_rows($result);
+                                if ($total >= 1) {
+                                    echo '<li><a class="dropdown-item" href="'.$config['URL'].'/products">All Products</a></li>';
+                                    while ($row = mysqli_fetch_assoc($result)) {
+                                        echo '<li><a class="dropdown-item" href="'.$config['URL'].'/products?id='.$row['category_id'].'">'.$row['Name'].'</a></li>';
+                                    }
+                                }
+                                echo '<li><a class="dropdown-item" href="'.$config['URL'].'/products?id=0">Accessories</a></li>';
+                            ?>
+                        </ul>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link text-light" href="#">About Us</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-light" href="#">Contact Us</a>
+                        <a class="nav-link text-light" href='<?php echo $config['URL']?>/contact'>Contact Us</a>
                     </li>
                     <li class="nav-item">
                         <?php
@@ -53,12 +69,12 @@
                 ?>
                 <ul class="navbar-nav">
                     <li class="nav-item">
-                        <a class="nav-link text-light" href="#">
+                        <a class="nav-link text-light" href='<?php echo $config['URL']?>/cart/'>
                             <i class="fas fa-shopping-cart"></i>
                         </a>
                     </li>
                     <li class="nav-item dropdown text-light pe-5">
-                        <a class="nav-link dropdown-toggle" href="#" id="profileDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <a class="nav-link dropdown-toggle" href='<?php echo $config['URL']?>/cart/' id="profileDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                             <i class="fas fa-user-circle"></i>
                         </a>
                         <ul class="dropdown-menu" aria-labelledby="profileDropdown">

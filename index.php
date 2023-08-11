@@ -4,7 +4,23 @@
     $connection = mysqli_connect($config['DB_URL'],$config['DB_USERNAME'],$config['DB_PASSWORD'],$config['DB_DATABASE']);
     if (isset($_POST['submit']) && isset($_POST['plant_id'])){
         if (isset($_SESSION['isLoggedin'])){
-
+            $user_id = $_SESSION['user-id'];
+            $plant_id = $_POST['plant_id'];
+            $sql = "SELECT * FROM `cart` WHERE `user_id` = $user_id AND `plant_id` = $plant_id";
+            $result = mysqli_query($connection,$sql);
+            $total  = mysqli_num_rows($result);
+            if ($total == 1) {
+                header('location: '. $config['URL'].'/cart');
+                exit();
+            } else {
+                $sql2 = "INSERT INTO `cart` (`user_id`, `plant_id`, `Quantity`) 
+                VALUES ($user_id, $plant_id, 1)";
+                $result2 = mysqli_query($connection,$sql2);
+                if ($result2) {
+                    header('location: '. $config['URL'].'/cart');
+                    exit();
+                }
+            }
         } else {
             header('location: '. $config['URL'].'/user/login');
             exit();
@@ -20,7 +36,7 @@
     <title>Document</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <style>
         .addHover:hover {
             box-shadow: 0 1rem 2rem rgba(0, 0, 0, 0.306) !important;
@@ -28,7 +44,7 @@
     </style>
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container-fluid">
             <a class="navbar-brand" href="#">
                 <img src='<?php echo $config['URL']?>/assets/image/logos/logo7.png' alt="Site Logo" width="50">
@@ -39,7 +55,10 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav me-auto">
                     <li class="nav-item">
-                        <a class="nav-link text-light" href="#">Home</a>
+                        <a class="nav-link text-light" href='<?php echo $config['URL']?>/'>Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-light" href='<?php echo $config['URL']?>/about'>About Us</a>
                     </li>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle text-light" href="#" id="navbarDarkDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -51,6 +70,7 @@
                                 $result = mysqli_query($connection,$sql);
                                 $total  = mysqli_num_rows($result);
                                 if ($total >= 1) {
+                                    echo '<li><a class="dropdown-item" href="'.$config['URL'].'/products">All Products</a></li>';
                                     while ($row = mysqli_fetch_assoc($result)) {
                                         echo '<li><a class="dropdown-item" href="'.$config['URL'].'/products?id='.$row['category_id'].'">'.$row['Name'].'</a></li>';
                                     }
@@ -60,10 +80,7 @@
                         </ul>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link text-light" href="#">About Us</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-light" href="#">Contact Us</a>
+                        <a class="nav-link text-light" href='<?php echo $config['URL']?>/contact'>Contact Us</a>
                     </li>
                     <li class="nav-item">
                         <?php
@@ -82,12 +99,12 @@
                 ?>
                 <ul class="navbar-nav">
                     <li class="nav-item">
-                        <a class="nav-link text-light" href="#">
+                        <a class="nav-link text-light" href='<?php echo $config['URL']?>/cart/'>
                             <i class="fas fa-shopping-cart"></i>
                         </a>
                     </li>
                     <li class="nav-item dropdown text-light pe-5">
-                        <a class="nav-link dropdown-toggle" href="#" id="profileDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <a class="nav-link dropdown-toggle" href='<?php echo $config['URL']?>/cart/' id="profileDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                             <i class="fas fa-user-circle"></i>
                         </a>
                         <ul class="dropdown-menu" aria-labelledby="profileDropdown">
