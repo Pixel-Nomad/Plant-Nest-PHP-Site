@@ -1,5 +1,5 @@
 <?php
-    require ('./config.php'); 
+    require ('../config.php'); 
     session_start();
     $connection = mysqli_connect($config['DB_URL'],$config['DB_USERNAME'],$config['DB_PASSWORD'],$config['DB_DATABASE']);
 ?>
@@ -22,7 +22,7 @@
     </style>
 </head>
 <body>
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container-fluid">
             <a class="navbar-brand" href="#">
                 <img src='<?php echo $config['URL']?>/assets/image/logos/logo7.png' alt="Site Logo" width="50">
@@ -121,10 +121,9 @@
     <div class="row">
       <div class="col">
         <i class="fas fa-check-circle fa-5x text-success mb-4"></i>
-        <h1 class="mb-3">Thank You for Your Purchase!</h1>
-        <p class="lead">We greatly appreciate your business and support. Your purchase is essential to us.</p>
-        <p class="lead">If you have any questions or need assistance, please don't hesitate to contact our customer support.</p>
-        <a href='<?php echo $config['URL']?>/products/' class="btn btn-primary mt-3">Continue Shopping</a>
+        <h1 class="mb-3">Thank You for Your Feedback!</h1>
+        <p class="lead">We greatly appreciate your time and support.</p>
+        <a href='<?php echo $config['URL']?>/' class="btn btn-primary mt-3">Continue...</a>
       </div>
     </div>
   </div>

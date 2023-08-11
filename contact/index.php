@@ -1,5 +1,5 @@
 <?php
-    require ('./config.php'); 
+    require ('../config.php'); 
     session_start();
     $connection = mysqli_connect($config['DB_URL'],$config['DB_USERNAME'],$config['DB_PASSWORD'],$config['DB_DATABASE']);
 ?>
@@ -22,7 +22,7 @@
     </style>
 </head>
 <body>
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container-fluid">
             <a class="navbar-brand" href="#">
                 <img src='<?php echo $config['URL']?>/assets/image/logos/logo7.png' alt="Site Logo" width="50">
@@ -117,16 +117,80 @@
             </div>
         </div>
     </nav>
-    <div class="container text-center mt-5">
-    <div class="row">
-      <div class="col">
-        <i class="fas fa-check-circle fa-5x text-success mb-4"></i>
-        <h1 class="mb-3">Thank You for Your Purchase!</h1>
-        <p class="lead">We greatly appreciate your business and support. Your purchase is essential to us.</p>
-        <p class="lead">If you have any questions or need assistance, please don't hesitate to contact our customer support.</p>
-        <a href='<?php echo $config['URL']?>/products/' class="btn btn-primary mt-3">Continue Shopping</a>
-      </div>
+    <br>
+    <br>
+    <div class="container mt-5">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="ratio addHover ratio-4x3">
+                    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d12345.6789!2d-71.0600!3d42.3601!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMzLCsDE5JzM1LjkiTiA3McKwMjEnMjQuMCJF!5e0!3m2!1sen!2sus!4v1628777041234!5m2!1sen!2sus" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+                </div>
+            </div>
+            <div class="col-md-6 mt-5">
+                <div class="card mt-5 addHover p-3 mb-5 bg-gradient rounded">
+                    <div class="row">
+                        <div class="col">
+                            <p class="fw-bold">Email:</p>
+                            <p class="fw-normal">plantnest@gmail.com</p>
+                            <p class="fw-bold">Type:</p>
+                            <p class="fw-normal">Random Address on Random Block in Random city, Random Country</p>
+                            <p class="fw-bold">Number:</p>
+                            <p class="fw-normal">0000 0000000</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-  </div>
+    <br>
+    <br>
+    <footer class="bg-dark text-white p-4">
+        <div class="container">
+      <div class="row row-cols-1 row-cols-md-4">
+        <div class="col">
+        <img src='<?php echo $config['URL']?>/assets/image/logos/logo10.png' alt="Website Logo" class="mb-3 ms-3" >
+
+        </div>
+        <div class="col pt-5">
+            <h5>Quick Links</h5>
+          <ul class="list-unstyled">
+            <li><a href='<?php echo $config['URL']?>/'>Home</a></li>
+            <li><a href='<?php echo $config['URL']?>/about'>About Us</a></li>
+            <li><a href='<?php echo $config['URL']?>/feedback'>Feedback Form</a></li>
+            <?php
+                if (isset($_SESSION['isLoggedin'])){
+            ?>
+                <li><a href='<?php echo $config['URL']?>/user/settings'>Settings</a></li>
+            <?php
+                } 
+            ?>
+            <li><a href='<?php echo $config['URL']?>/products'>Products</a></li>
+            <li><a href='<?php echo $config['URL']?>/user/orders'>My Orders</a></li>
+          </ul>
+        </div>
+        <div class="col pt-5">
+            <h5>Contact Us</h5>
+            <p>Email: plantnest@gmail.com</p>
+            <p>Phone: 0000-0000000</p>
+            <p>Address: Clifton,Karachi, Pakistan</p>
+        </div>
+       <div class="col pt-5">
+        <a href="https://www.facebook.com/" class="fa fa-facebook pe-2"></a>
+          <a href="https://www.instagram.com/" class="fa fa-instagram pe-2"></a>
+          <a href="https://www.twitter.com/" class="fa fa-twitter pe-2"></a>
+          <a href="https://www.youtube.com/" class="fa fa-youtube pe-2"></a>
+          <br>
+          <br>
+          <a href="#" class="text-white me-3">Privacy Policy</a>
+          <a href="#" class="text-white me-3">Terms of Service</a>
+          <br>
+          <a href='<?php echo $config['URL']?>/sitemap' class="text-white me-3">Site Map</a>
+       </div>
+      </div>
+      
+        </div>
+        </div>
+    </footer>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>    
 </body>
 </html>

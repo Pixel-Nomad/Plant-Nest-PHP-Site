@@ -22,7 +22,20 @@
                 }
             }
         } else {
-            header('location: '. $config['URL'].'/user/login');
+                header('location: '. $config['URL'].'/user/login');
+                exit();
+        }
+    }
+    if (isset($_POST['submit2']) && isset($_POST['plantId'])) {
+        $user_id = $_SESSION['user-id'];
+        $plant_id = $_POST['plantId'];
+        $stars = $_POST['review-stars'];
+        $review = $_POST['review-text'];
+        $sql = "INSERT INTO `reviews` (`plant_id`, `user_id`, `stars`, `review`) 
+        VALUES ($plant_id, $user_id, $stars,'$review')";
+        $result = mysqli_query($connection,$sql);
+        if ($result) {
+            header('location: '. $config['URL'].'/products');
             exit();
         }
     }
@@ -33,13 +46,51 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Plant Nest</title>
+    <link rel="icon" href='<?php echo $config['URL']?>/assets/image/fav/fav.ico' type="image/x-icon">
+    <link rel="shortcut icon" href='<?php echo $config['URL']?>/assets/image/fav/fav.ico' type="image/x-icon">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <style>
         .addHover:hover {
             box-shadow: 0 1rem 2rem rgba(0, 0, 0, 0.306) !important;
+        }
+        /* Add your custom styles here */
+
+        /* Overlay */
+        .review-form-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.7);
+        justify-content: center;
+        align-items: center;
+        }
+
+        /* Form */
+        .review-form {
+        background-color: white;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.3);
+        width: 80%;
+        max-width: 500px;
+        position: relative;
+        }
+
+        /* Close button */
+        .close-review-form {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        background: none;
+        border: none;
+        font-size: 24px;
+        cursor: pointer;
         }
     </style>
 </head>
@@ -79,15 +130,21 @@
                             ?>
                         </ul>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-light" href='<?php echo $config['URL']?>/contact'>Contact Us</a>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle text-light" href="#" id="navbarDarkDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            More Pages
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="navbarDarkDropdownMenuLink">
+                            <li><a class="dropdown-item" href='<?php echo $config['URL']?>/contact'>Contact Us</a></li>
+                            <li><a class="dropdown-item" href='<?php echo $config['URL']?>/feedback'>Feedback Form</a></li>
+                        </ul>
                     </li>
                     <li class="nav-item">
                         <?php
                             if (isset($_SESSION['isLoggedin'])){
                                 if ($_SESSION['user-role'] != 'user') {
                         ?>
-                            <a class="nav-link text-light" href="#">Admin Login</a>
+                            <a class="nav-link text-light" href='<?php echo $config['URL']?>/admin'>Admin Login</a>
                         <?php
                                 }
                             } 
@@ -108,6 +165,7 @@
                             <i class="fas fa-user-circle"></i>
                         </a>
                         <ul class="dropdown-menu" aria-labelledby="profileDropdown">
+                            <li><a class="dropdown-item" href='<?php echo $config['URL']?>/user/orders'>My Orders</a></li>
                             <li><a class="dropdown-item" href='<?php echo $config['URL']?>/user/settings'>Settings</a></li>
                             <li><a class="dropdown-item" href='<?php echo $config['URL']?>/user/logout'>Logout</a></li>
                         </ul>
@@ -203,14 +261,79 @@
                                         } else {
                                             echo '<h3 class="text-center">SOLD OUT</h3>';
                                         }
+                                    if (isset($_SESSION['isLoggedin'])){
+                                        echo ' 
+                                            <div class="d-grid gap-2">
+                                                <a href="'.$config['URL'].'/user/register."></a>
+                                                <button class="btn btn-primary open-review-form"  data-plant-id="'.$row['plant_id'].'">Submit Review</button>
+                                            </div>';
+                                    }
                                     echo '</div>
                                 </div>
                             </div>';
                     }
+                } else {
+                    ?>
+                    <br>
+                    <br>
+                    <br>
+                    <br>
+                    <br>
+                    <br>
+                    <br>
+                    <br>
+                    <br>
+                    <br>
+                    <br>
+                    <br>
+                    <br>
+                    <br>
+                    <br>
+                    <br>
+                    <br>
+                    <br>
+                    <br>
+                    <br>
+                    <br>
+                    <br>
+                    <?php
                 }
             ?>
         </div>
     </div>
+    <?php
+        if (isset($_SESSION['isLoggedin'])){
+    ?>
+        <div class="review-form-overlay" id="reviewFormOverlay">
+        <div class="review-form">
+            <button class="close-review-form" id="closeReviewForm"><i class="fas fa-times"></i></button>
+            <h2 class="mb-4">Submit a Review</h2>
+            <form method="post">
+            <input type="text" class="d-none" id="plantId" name="plantId" value="">
+            <div class="mb-3">
+                <label for="rating" class="form-label">Rating</label>
+                <select class="form-select" id="rating" required name="review-stars">
+                    <option value="" disabled selected>Select rating...</option>
+                    <option value="5">5 stars</option>
+                    <option value="4">4 stars</option>
+                    <option value="3">3 stars</option>
+                    <option value="2">2 stars</option>
+                    <option value="1">1 star</option>
+                </select>
+            </div>
+            <div class="mb-3">
+                <label for="reviewText" class="form-label">Review</label>
+                <textarea class="form-control" id="reviewText" name="review-text" rows="4" required></textarea>
+            </div>
+            <input type="submit" class="btn btn-primary" value="Submit" name="submit2"></input>
+            </form>
+        </div>
+    </div>
+    <?php
+        }
+    ?>
+    
+
     <footer class="bg-dark text-white p-4">
         <div class="container">
       <div class="row row-cols-1 row-cols-md-4">
@@ -250,6 +373,8 @@
           <br>
           <a href="#" class="text-white me-3">Privacy Policy</a>
           <a href="#" class="text-white me-3">Terms of Service</a>
+          <br>
+          <a href='<?php echo $config['URL']?>/sitemap' class="text-white me-3">Site Map</a>
        </div>
       </div>
       
@@ -257,5 +382,27 @@
         </div>
     </footer>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+    <script>
+        const openReviewFormButtons = document.querySelectorAll(".open-review-form");
+
+        // Add a click event listener to each button
+        openReviewFormButtons.forEach(button => {
+        button.addEventListener("click", function () {
+            const plantId = button.getAttribute("data-plant-id");
+            console.log()
+            openReviewForm(plantId);
+        });
+        });
+
+        // Function to open the review form with a predefined plant_id
+        function openReviewForm(plantId) {
+            document.getElementById("plantId").value = plantId;
+            document.getElementById("reviewFormOverlay").style.display = "flex";
+        }
+
+        document.getElementById("closeReviewForm").addEventListener("click", function () {
+            document.getElementById("reviewFormOverlay").style.display = "none";
+        });
+     </script>
 </body>
 </html>

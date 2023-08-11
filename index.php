@@ -33,7 +33,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Plant Nest</title>
+    <link rel="icon" href='<?php echo $config['URL']?>/assets/image/fav/fav.ico' type="image/x-icon">
+    <link rel="shortcut icon" href='<?php echo $config['URL']?>/assets/image/fav/fav.ico' type="image/x-icon">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
@@ -42,9 +44,10 @@
             box-shadow: 0 1rem 2rem rgba(0, 0, 0, 0.306) !important;
         }
     </style>
+    
 </head>
 <body>
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container-fluid">
             <a class="navbar-brand" href="#">
                 <img src='<?php echo $config['URL']?>/assets/image/logos/logo7.png' alt="Site Logo" width="50">
@@ -93,7 +96,7 @@
                             if (isset($_SESSION['isLoggedin'])){
                                 if ($_SESSION['user-role'] != 'user') {
                         ?>
-                            <a class="nav-link text-light" href="#">Admin Login</a>
+                            <a class="nav-link text-light" href='<?php echo $config['URL']?>/admin'>Admin Login</a>
                         <?php
                                 }
                             } 
@@ -294,6 +297,8 @@
           <br>
           <a href="#" class="text-white me-3">Privacy Policy</a>
           <a href="#" class="text-white me-3">Terms of Service</a>
+          <br>
+          <a href='<?php echo $config['URL']?>/sitemap' class="text-white me-3">Site Map</a>
        </div>
       </div>
       

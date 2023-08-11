@@ -1,7 +1,9 @@
 <?php
     session_start();
     require ('../../config.php'); 
-    require '../../vendor/autoload.php'; // Path to Composer's autoloader
+    require '../../vendor/phpmailer/Exception.php';
+    require '../../vendor/phpmailer/PHPMailer.php';
+    require '../../vendor/phpmailer/SMTP.php';
     use PHPMailer\PHPMailer\PHPMailer;
     use PHPMailer\PHPMailer\SMTP;
     use PHPMailer\PHPMailer\Exception;
@@ -110,7 +112,13 @@
       echo "<script>alert('Failed To Register');</script>";
     }
 } else {
-    header('location: '.$config['URL']);
+    if(isset($_SERVER['HTTP_REFERER'])) {
+        header('location: '. $_SERVER['HTTP_REFERER']);
+        exit();
+    } else {
+        header('location: '. $config['URL']);
+        exit();
+    }
 }
 ?>
 
@@ -119,7 +127,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Plant Nest</title>
+    <link rel="icon" href='<?php echo $config['URL']?>/assets/image/fav/fav.ico' type="image/x-icon">
+    <link rel="shortcut icon" href='<?php echo $config['URL']?>/assets/image/fav/fav.ico' type="image/x-icon">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <link rel="stylesheet" href="style.css">
     <style>
@@ -129,7 +139,7 @@
     </style>
 </head>
 <body>
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container-fluid">
             <a class="navbar-brand" href="#">
                 <img src='<?php echo $config['URL']?>/assets/image/logos/logo7.png' alt="Site Logo" width="50">
@@ -164,15 +174,21 @@
                             ?>
                         </ul>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-light" href='<?php echo $config['URL']?>/contact'>Contact Us</a>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle text-light" href="#" id="navbarDarkDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            More Pages
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="navbarDarkDropdownMenuLink">
+                            <li><a class="dropdown-item" href='<?php echo $config['URL']?>/contact'>Contact Us</a></li>
+                            <li><a class="dropdown-item" href='<?php echo $config['URL']?>/feedback'>Feedback Form</a></li>
+                        </ul>
                     </li>
                     <li class="nav-item">
                         <?php
                             if (isset($_SESSION['isLoggedin'])){
                                 if ($_SESSION['user-role'] != 'user') {
                         ?>
-                            <a class="nav-link text-light" href="#">Admin Login</a>
+                            <a class="nav-link text-light" href='<?php echo $config['URL']?>/admin'>Admin Login</a>
                         <?php
                                 }
                             } 
@@ -193,6 +209,7 @@
                             <i class="fas fa-user-circle"></i>
                         </a>
                         <ul class="dropdown-menu" aria-labelledby="profileDropdown">
+                            <li><a class="dropdown-item" href='<?php echo $config['URL']?>/user/orders'>My Orders</a></li>
                             <li><a class="dropdown-item" href='<?php echo $config['URL']?>/user/settings'>Settings</a></li>
                             <li><a class="dropdown-item" href='<?php echo $config['URL']?>/user/logout'>Logout</a></li>
                         </ul>
@@ -348,6 +365,14 @@
         ?>
         
     </div>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
     <footer class="bg-dark text-white p-4">
         <div class="container">
       <div class="row row-cols-1 row-cols-md-4">
@@ -387,6 +412,8 @@
           <br>
           <a href="#" class="text-white me-3">Privacy Policy</a>
           <a href="#" class="text-white me-3">Terms of Service</a>
+          <br>
+          <a href='<?php echo $config['URL']?>/sitemap' class="text-white me-3">Site Map</a>
        </div>
       </div>
       
