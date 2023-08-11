@@ -79,8 +79,14 @@
                             ?>
                         </ul>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-light" href='<?php echo $config['URL']?>/contact'>Contact Us</a>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle text-light" href="#" id="navbarDarkDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            More Pages
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="navbarDarkDropdownMenuLink">
+                            <li><a class="dropdown-item" href='<?php echo $config['URL']?>/contact'>Contact Us</a></li>
+                            <li><a class="dropdown-item" href='<?php echo $config['URL']?>/feedback'>Feedback Form</a></li>
+                        </ul>
                     </li>
                     <li class="nav-item">
                         <?php
@@ -108,6 +114,7 @@
                             <i class="fas fa-user-circle"></i>
                         </a>
                         <ul class="dropdown-menu" aria-labelledby="profileDropdown">
+                            <li><a class="dropdown-item" href='<?php echo $config['URL']?>/user/orders'>My Orders</a></li>
                             <li><a class="dropdown-item" href='<?php echo $config['URL']?>/user/settings'>Settings</a></li>
                             <li><a class="dropdown-item" href='<?php echo $config['URL']?>/user/logout'>Logout</a></li>
                         </ul>
@@ -249,7 +256,7 @@
         ?>
     </div>
     <footer class="bg-dark text-white p-4">
-    <div class="container">
+        <div class="container">
       <div class="row row-cols-1 row-cols-md-4">
         <div class="col">
         <img src='<?php echo $config['URL']?>/assets/image/logos/logo10.png' alt="Website Logo" class="mb-3 ms-3" >
@@ -258,11 +265,18 @@
         <div class="col pt-5">
             <h5>Quick Links</h5>
           <ul class="list-unstyled">
-            <li><a href="#">Home</a></li>
-            <li><a href="#">About Us</a></li>
-            <li><a href="#">Feedback Form</a></li>
-            <li><a href="#">Settings</a></li>
-            <li><a href="#">Products</a></li>
+            <li><a href='<?php echo $config['URL']?>/'>Home</a></li>
+            <li><a href='<?php echo $config['URL']?>/about'>About Us</a></li>
+            <li><a href='<?php echo $config['URL']?>/feedback'>Feedback Form</a></li>
+            <?php
+                if (isset($_SESSION['isLoggedin'])){
+            ?>
+                <li><a href='<?php echo $config['URL']?>/user/settings'>Settings</a></li>
+            <?php
+                } 
+            ?>
+            <li><a href='<?php echo $config['URL']?>/products'>Products</a></li>
+            <li><a href='<?php echo $config['URL']?>/user/orders'>My Orders</a></li>
           </ul>
         </div>
         <div class="col pt-5">
@@ -280,13 +294,12 @@
           <br>
           <a href="#" class="text-white me-3">Privacy Policy</a>
           <a href="#" class="text-white me-3">Terms of Service</a>
-          <a href="#" class="text-white">Sitemap</a>
        </div>
       </div>
       
-    </div>
-    </div>
-  </footer>
+        </div>
+        </div>
+    </footer>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
 </body>
 </html>

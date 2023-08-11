@@ -74,7 +74,7 @@
                         VALUES ($user_id,'$randomString',$total_amount,$total_price)";
                         $result4 = mysqli_query($connection,$sql6);
                         if ($result4) {
-                            header('location: '.$config['URL'].'/products');
+                            header('location: '.$config['URL'].'/thanks.php');
                             exit();
                         }
                     }
@@ -289,6 +289,8 @@
                                 <input type="text" class="d-none" name="total_price" value="<?php echo $totalPrice?>">
                                 <button class="btn btn-primary" name="checkoutBtn">Checkout</button>
                             </form>
+                            <br>
+                            <br>
                             <?php
                                 }
                             ?>
@@ -306,12 +308,19 @@
                     <br>
                     <br>
                     <h3 class="fs-5">Click <a href='<?php echo $config['URL']?>/products'>Here</a> to Continue Shopping</h3>
+                    <br>
+                    <br>
+                    <br>
+                    <br>
+                    <br>
+                    <br>
+                    <br>
                 <?php
             }
         ?>
     </div>
     <footer class="bg-dark text-white p-4">
-    <div class="container">
+        <div class="container">
       <div class="row row-cols-1 row-cols-md-4">
         <div class="col">
         <img src='<?php echo $config['URL']?>/assets/image/logos/logo10.png' alt="Website Logo" class="mb-3 ms-3" >
@@ -320,11 +329,18 @@
         <div class="col pt-5">
             <h5>Quick Links</h5>
           <ul class="list-unstyled">
-            <li><a href="#">Home</a></li>
-            <li><a href="#">About Us</a></li>
-            <li><a href="#">Feedback Form</a></li>
-            <li><a href="#">Settings</a></li>
-            <li><a href="#">Products</a></li>
+            <li><a href='<?php echo $config['URL']?>/'>Home</a></li>
+            <li><a href='<?php echo $config['URL']?>/about'>About Us</a></li>
+            <li><a href='<?php echo $config['URL']?>/feedback'>Feedback Form</a></li>
+            <?php
+                if (isset($_SESSION['isLoggedin'])){
+            ?>
+                <li><a href='<?php echo $config['URL']?>/user/settings'>Settings</a></li>
+            <?php
+                } 
+            ?>
+            <li><a href='<?php echo $config['URL']?>/products'>Products</a></li>
+            <li><a href='<?php echo $config['URL']?>/user/orders'>My Orders</a></li>
           </ul>
         </div>
         <div class="col pt-5">
@@ -342,13 +358,12 @@
           <br>
           <a href="#" class="text-white me-3">Privacy Policy</a>
           <a href="#" class="text-white me-3">Terms of Service</a>
-          <a href="#" class="text-white">Sitemap</a>
        </div>
       </div>
       
-    </div>
-    </div>
-  </footer>
+        </div>
+        </div>
+    </footer>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
 </body>
 </html>

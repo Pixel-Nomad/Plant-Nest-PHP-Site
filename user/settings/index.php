@@ -643,50 +643,12 @@
           <h4>Logout</h4>
           <p>Click the button below to logout:</p>
           <a href='<?php echo $config['URL']?>/user/logout' class="btn btn-primary">Logout</a>
+          <br>
         </div>
       </div>
     </div>
   </div>
 </div>
-<footer class="bg-dark text-white p-4">
-    <div class="container">
-      <div class="row row-cols-1 row-cols-md-4">
-        <div class="col">
-        <img src='<?php echo $config['URL']?>/assets/image/logos/logo10.png' alt="Website Logo" class="mb-3 ms-3" >
-
-        </div>
-        <div class="col pt-5">
-            <h5>Quick Links</h5>
-          <ul class="list-unstyled">
-            <li><a href="#">Home</a></li>
-            <li><a href="#">About Us</a></li>
-            <li><a href="#">Feedback Form</a></li>
-            <li><a href="#">Settings</a></li>
-            <li><a href="#">Products</a></li>
-          </ul>
-        </div>
-        <div class="col pt-5">
-            <h5>Contact Us</h5>
-            <p>Email: plantnest@gmail.com</p>
-            <p>Phone: 0000-0000000</p>
-            <p>Address: Clifton,Karachi, Pakistan</p>
-        </div>
-       <div class="col pt-5">
-        <a href="https://www.facebook.com/" class="fa fa-facebook pe-2"></a>
-          <a href="https://www.instagram.com/" class="fa fa-instagram pe-2"></a>
-          <a href="https://www.twitter.com/" class="fa fa-twitter pe-2"></a>
-          <a href="https://www.youtube.com/" class="fa fa-youtube pe-2"></a>
-          <br>
-          <br>
-          <a href="#" class="text-white me-3">Privacy Policy</a>
-          <a href="#" class="text-white me-3">Terms of Service</a>
-          <a href="#" class="text-white">Sitemap</a>
-       </div>
-      </div>
-      
-    </div>
-    </div>
-  </footer>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
 </body>
 </html>
