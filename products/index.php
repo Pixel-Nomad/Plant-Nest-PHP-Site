@@ -2,6 +2,11 @@
     require ('../config.php'); 
     session_start();
     $connection = mysqli_connect($config['DB_URL'],$config['DB_USERNAME'],$config['DB_PASSWORD'],$config['DB_DATABASE']);
+    function isWhitespaceString($str) {
+        echo $str;
+        echo trim($str);
+        return (trim($str) === '');
+    }
     if (isset($_POST['submit']) && isset($_POST['plant_id'])){
         if (isset($_SESSION['isLoggedin'])){
             $user_id = $_SESSION['user-id'];
@@ -37,6 +42,17 @@
         if ($result) {
             header('location: '. $config['URL'].'/products');
             exit();
+        }
+    }
+    if (isset($_POST['submit3']) && isset($_POST['search-type'])) {
+        if ($_POST['search-type'] == 'name' || $_POST['search-type'] == 'description'){
+            if (isWhitespaceString($_POST['search-data'])){
+                header('location: '. $config['URL'].'/products');
+                exit();
+            } else {
+                header('location: '. $config['URL'].'/products/index.php?type='.$_POST['search-type'].'&data='.$_POST['search-data']);
+                exit();
+            }
         }
     }
 ?>
@@ -195,6 +211,12 @@
         if (isset($_GET['id']) && is_numeric($_GET['id'])){
             $id = (int)$_GET['id'];
             $query .= "WHERE `category_id` =$id";
+        } elseif (isset($_GET['type']) && isset($_GET['data'])) {
+            if ($_GET['type'] == 'name' || $_GET['type'] == 'description'){
+                $type = $_GET['type'];
+                $data = $_GET['data'];
+                $query .= "WHERE `$type` LIKE '%$data%'";
+            }
         }
         $result = mysqli_query($connection,$query);
         $total  = mysqli_num_rows($result);
@@ -203,10 +225,10 @@
         <div class="row row-cols-1 row-cols-md-2 m-4">
             <div class="col">
                 <h1 class="fs-1 ">Products</h1>
+                <h4 class="fs-5 pt-2"><?php echo $total.' items'?></h4>
             </div>
             <div class="col">
                 <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-                    <h4 class="fs-5 pt-2"><?php echo $total.' items'?></h4>
                     <div class="dropdown">
                         <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton2" data-bs-toggle="dropdown" aria-expanded="false">
                             Products
@@ -226,6 +248,17 @@
                             ?>
                         </ul>
                     </div>
+                    <form method="post">
+                        <div class="input-group mb-3">
+                            <select class="form-select" id="rating" required name="search-type">
+                                <option value="name"selected>Search In Names</option>
+                                <option value="description">Search In Description</option>
+                            </select>
+                            <input type="text" class="form-control" placeholder="Search Products" name="search-data" aria-label="Search Products" aria-describedby="button-addon2">
+                            <input type="submit" class="btn btn-outline-secondary" id="button-addon2" value="Search" name="submit3">
+                        </div>
+                    </form>
+                    
                 </div>
             </div>
         </div>

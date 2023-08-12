@@ -19,9 +19,19 @@
         .addHover:hover {
             box-shadow: 0 1rem 2rem rgba(0, 0, 0, 0.306) !important;
         }
+        .background {
+            background-image: url('your-image.jpg'); /* Replace with the path to your image */
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            height: 100vh; /* Adjust to your needs */
+            color: white; /* Adjust text color for readability */
+            text-align: center;
+            padding: 100px 0;
+        }
     </style>
 </head>
-<body>
+<body background='<?php echo $config['URL']?>/assets/image/pics/bg.jpg'>
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container-fluid">
             <a class="navbar-brand" href="#">
@@ -121,7 +131,7 @@
     <br>
     <div class="container mt-5">
         <div class="row">
-            <div class="col-md-6">
+            <div class="col-md-6 ">
                 <div class="ratio addHover ratio-4x3">
                     <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d12345.6789!2d-71.0600!3d42.3601!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMzLCsDE5JzM1LjkiTiA3McKwMjEnMjQuMCJF!5e0!3m2!1sen!2sus!4v1628777041234!5m2!1sen!2sus" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
                 </div>

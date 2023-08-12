@@ -1,0 +1,289 @@
+<?php
+    require ('../config.php'); 
+    session_start();
+    $connection = mysqli_connect($config['DB_URL'],$config['DB_USERNAME'],$config['DB_PASSWORD'],$config['DB_DATABASE']);
+    if (isset($_SESSION['isLoggedin'])){
+        if ($_SESSION['user-role'] != 'user') {
+        } else {
+            header('location: '. $config['URL'].'/user/login');
+            exit(); 
+        }
+    } else {
+        header('location: '. $config['URL'].'/user/login');
+        exit(); 
+    }
+?>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="<?php echo $config['URL']?>/assets/css/bootstrap.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css"
+    />
+    <link rel="stylesheet" href="<?php echo $config['URL']?>/assets/css/dataTables.bootstrap5.min.css"/>
+   
+    <link rel="stylesheet" href="<?php echo $config['URL']?>/assets/css/style.css" />
+    <title>Plant Nest</title> 
+    <link rel="icon" href='<?php echo $config['URL']?>/assets/image/fav/fav.ico' type="image/x-icon">
+    <link rel="shortcut icon" href='<?php echo $config['URL']?>/assets/image/fav/fav.ico' type="image/x-icon">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+        <div class="container-fluid">
+            <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#sidebar"
+                aria-controls="offcanvasExample">
+                <span class="navbar-toggler-icon" data-bs-target="#sidebar"></span>
+            </button>
+            <a class="navbar-brand me-auto ms-lg-0 ms-3 text-uppercase fw-bold" href="#">Admin Panel</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#topNavBar"
+                aria-controls="topNavBar" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="topNavBar">
+                <div class="d-flex ms-auto my-3 my-lg-0">
+                    <ul class="navbar-nav">
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle ms-2" href="#" role="button" data-bs-toggle="dropdown"
+                            aria-expanded="false">
+                            <i class="bi bi-person-fill"></i>
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item" href='<?php echo $config['URL']?>/user/settings'>Settings</a></li>
+                            <li><a class="dropdown-item" href='<?php echo $config['URL']?>/user/logout'>Logout</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </nav>
+    <div class="offcanvas offcanvas-start sidebar-nav bg-dark" tabindex="-1" id="sidebar">
+        <div class="offcanvas-body p-0">
+            <nav class="navbar-dark">
+                <ul class="navbar-nav">
+                <li>
+                    <div class="text-muted small fw-bold text-uppercase px-3">
+                    CORE
+                    </div>
+                </li>
+                <li>
+                    <a href='<?php echo $config['URL']?>/admin/' class="nav-link px-3 active">
+                    <span class="me-2"><i class="bi bi-speedometer2"></i></span>
+                    <span>Dashboard</span>
+                    </a>
+                    <a href='<?php echo $config['URL']?>/' class="nav-link px-3 active">
+                    <span class="me-2"><i class="bi bi-speedometer2"></i></span>
+                    <span>Go to Main Site</span>
+                    </a>
+                </li>
+                <li class="my-4">
+                    <hr class="dropdown-divider bg-light" />
+                </li>
+                <li>
+                    <div class="text-muted small fw-bold text-uppercase px-3 mb-3">
+                        Production
+                    </div>
+                </li>
+                <li>
+                    <a class="nav-link px-3 sidebar-link" data-bs-toggle="collapse" data-bs-toggle="layouts" href="#layouts">
+                    <span class="me-2"><i class="bi bi-speedometer2"></i></span>
+                    <span>Products</span>
+                    <span class="ms-auto">
+                        <span class="right-icon">
+                        <i class="bi bi-chevron-down"></i>
+                        </span>
+                    </span>
+                    </a>
+                    <div class="collapse" id="layouts">
+                    <ul class="navbar-nav ps-3">
+                        <li>
+                        <a href='<?php echo $config['URL']?>/admin/management/category' class="nav-link px-3">
+                            <span class="me-2"><i class="bi bi-speedometer2"></i></span>
+                            <span>Category Management</span>
+                        </a>
+                        </li>
+                        <li>
+                        <a href='<?php echo $config['URL']?>/admin/management/product' class="nav-link px-3">
+                            <span class="me-2"><i class="bi bi-speedometer2"></i></span>
+                            <span>Product Management</span>
+                        </a>
+                        </li>
+                        <li>
+                        <a href='<?php echo $config['URL']?>/admin/management/orders' class="nav-link px-3">
+                            <span class="me-2"><i class="bi bi-speedometer2"></i></span>
+                            <span>Order Management</span>
+                        </a>
+                        </li>
+                    </ul>
+                    </div>
+                </li>
+                <li>
+                    <a href='<?php echo $config['URL']?>/admin/user/reviews' class="nav-link px-3">
+                    <span class="me-2"><i class="bi bi-speedometer2"></i></span>
+                    <span>Product Reviews</span>
+                    </a>
+                </li>
+                <li>
+                    <a href='<?php echo $config['URL']?>/admin/user/feedbacks' class="nav-link px-3">
+                    <span class="me-2"><i class="bi bi-speedometer2"></i></span>
+                    <span>User Feedbacks</span>
+                    </a>
+                </li>
+                <li class="my-4">
+                    <hr class="dropdown-divider bg-light" />
+                </li>
+                <li>
+                    <div class="text-muted small fw-bold text-uppercase px-3 mb-3">
+                    Admin Work
+                    </div>
+                </li>
+                <li>
+                    <a href='<?php echo $config['URL']?>/admin/user/management' class="nav-link px-3">
+                    <span class="me-2"><i class="bi bi-speedometer2"></i></span>
+                    <span>User Management</span>
+                    </a>
+                </li>
+                <li class="fixed-bottom">
+                    <a class="nav-link px-3">
+                        <h4>Logged in</h4>
+                        <br>
+                        <h5 >As <?php echo $_SESSION['user-role']?></h5>
+                    </a>
+                    
+                </li>
+                </ul>
+                
+            </nav>
+        </div>
+    </div>
+    <main class="mt-5 pt-3">
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-md-12">
+          <h4>Dashboard</h4>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-3 mb-3">
+          <div class="card bg-primary text-white h-100">
+            <div class="card-body py-5 ps-4">Total Users (<?php
+                $sql = 'SELECT * FROM `users`';
+                $result = mysqli_query($connection,$sql);
+                $total  = mysqli_num_rows($result);
+                echo $total;
+            ?>)</div>
+            <div class="card-footer d-flex">
+            </div>
+          </div>
+        </div>
+        <div class="col-md-3 mb-3">
+          <div class="card bg-warning text-dark h-100">
+            <div class="card-body py-5 ps-4">New Orders (<?php
+                $sql = "SELECT * FROM `orders` WHERE `Status` = 'Pending'";
+                $result = mysqli_query($connection,$sql);
+                $total  = mysqli_num_rows($result);
+                echo $total;
+            ?>)</div>
+            <div class="card-footer d-flex">
+                
+            </div>
+          </div>
+        </div>
+        <div class="col-md-3 mb-3">
+          <div class="card bg-success text-white h-100">
+            <div class="card-body py-5 ps-4">Confirmed Orders (<?php
+                $sql = "SELECT * FROM `orders` WHERE `Status` = 'Confirmed'";
+                $result = mysqli_query($connection,$sql);
+                $total  = mysqli_num_rows($result);
+                echo $total;
+            ?>)</div>
+            <div class="card-footer d-flex">
+                
+            </div>
+          </div>
+        </div>
+        <div class="col-md-3 mb-3">
+          <div class="card bg-danger text-white h-100">
+            <div class="card-body py-5 ps-4">Picked UP orders (<?php
+                $sql = "SELECT * FROM `orders` WHERE `Status` = 'Picked UP'";
+                $result = mysqli_query($connection,$sql);
+                $total  = mysqli_num_rows($result);
+                echo $total;
+            ?>)</div>
+            <div class="card-footer d-flex">
+                
+            </div>
+          </div>
+        </div>
+        <div class="col-md-3 mb-3">
+          <div class="card bg-primary text-white h-100">
+            <div class="card-body py-5 ps-4">On the Way orders (<?php
+                $sql = "SELECT * FROM `orders` WHERE `Status` = 'On The Way'";
+                $result = mysqli_query($connection,$sql);
+                $total  = mysqli_num_rows($result);
+                echo $total;
+            ?>)</div>
+            <div class="card-footer d-flex">
+                
+            </div>
+          </div>
+        </div>
+        <div class="col-md-3 mb-3">
+          <div class="card bg-warning text-dark h-100">
+            <div class="card-body py-5 ps-4">Delivered orders (<?php
+                $sql = "SELECT * FROM `orders` WHERE `Status` = 'Delivered'";
+                $result = mysqli_query($connection,$sql);
+                $total  = mysqli_num_rows($result);
+                echo $total;
+            ?>)</div>
+            <div class="card-footer d-flex">
+                
+            </div>
+          </div>
+        </div>
+        <div class="col-md-3 mb-3">
+          <div class="card bg-success text-white h-100">
+            <div class="card-body py-5 ps-4">Cancelled orders (<?php
+                $sql = "SELECT * FROM `orders` WHERE `Status` = 'Cancelled'";
+                $result = mysqli_query($connection,$sql);
+                $total  = mysqli_num_rows($result);
+                echo $total;
+            ?>)</div>
+            <div class="card-footer d-flex">
+                
+            </div>
+          </div>
+        </div>
+        <div class="col-md-3 mb-3">
+          <div class="card bg-primary text-white h-100">
+            <div class="card-body py-5 ps-4">Total Plants Sold (<?php
+                $sql = 'SELECT COUNT(quantity) as total FROM `order_items`';
+                $result = mysqli_query($connection,$sql);
+                if ($result) {
+                    $row = mysqli_fetch_assoc($result);
+                    echo $row['total'];
+                } else {
+                    echo '0';
+                }
+                
+            ?>)</div>
+            <div class="card-footer d-flex">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+    <script src="<?php echo $config['URL']?>/assets/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.0.2/dist/chart.min.js"></script>
+    <script src="<?php echo $config['URL']?>/assets/js/jquery-3.5.1.js"></script>
+    <script src="<?php echo $config['URL']?>/assets/js/jquery.dataTables.min.js"></script>
+    <script src="<?php echo $config['URL']?>/assets/js/dataTables.bootstrap5.min.js"></script>
+    <script src="<?php echo $config['URL']?>/assets/js/script.js"></script>
+</body>
+</html>

@@ -254,9 +254,15 @@
                             <div class="col-md-8">
                                 <div class="row cart-row">
                                     <?php
+
+                                        if(isset($_POST['checkoutBtn'])) {
+
+                                        }
                                         while ($row = mysqli_fetch_assoc($result)) {
-                                            $totalItem += 1;
-                                            $totalPrice += ($row['price'] * $row['Quantity']);
+                                            if(!isset($_POST['checkoutBtn'])) {
+                                                $totalItem += 1;
+                                                $totalPrice += ($row['price'] * $row['Quantity']);
+                                            }
                                             echo '<div class="col-md-4">
                                                     <div class="cart-item">
                                                         <img src="'.$row['image'].'" class="img-thumbnail" alt="">
