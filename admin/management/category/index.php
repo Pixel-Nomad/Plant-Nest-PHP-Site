@@ -131,7 +131,7 @@
                 aria-controls="offcanvasExample">
                 <span class="navbar-toggler-icon" data-bs-target="#sidebar"></span>
             </button>
-            <a class="navbar-brand me-auto ms-lg-0 ms-3 text-uppercase fw-bold" href="#">Admin Panel</a>
+            <a class="navbar-brand me-auto ms-lg-0 ms-3 text-uppercase fw-bold" href="#">Admin Panel ( Logged in as <?php echo $_SESSION['user-role']?> )</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#topNavBar"
                 aria-controls="topNavBar" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
@@ -210,6 +210,12 @@
                                 <span class="me-2"><i class="bi bi-speedometer2"></i></span>
                                 <span>Order Management</span>
                             </a>
+                                <li>
+                            <a href='<?php echo $config['URL']?>/admin/management/list' class="nav-link px-3">
+                                <span class="me-2"><i class="bi bi-speedometer2"></i></span>
+                                <span>Order List</span>
+                            </a>
+                            </li>
                             </li>
                         </ul>
                         </div>
@@ -226,6 +232,12 @@
                         <span>User Feedbacks</span>
                         </a>
                     </li>
+                    <li>
+                    <a href='<?php echo $config['URL']?>/admin/management/sliders' class="nav-link px-3">
+                      <span class="me-2"><i class="bi bi-speedometer2"></i></span>
+                      <span>Slider Tool</span>
+                    </a>
+                </li>
                     <li class="my-4">
                         <hr class="dropdown-divider bg-light" />
                     </li>
@@ -240,14 +252,7 @@
                         <span>User Management</span>
                         </a>
                     </li>
-                    <li class="fixed-bottom">
-                        <a class="nav-link px-3">
-                            <h4>Logged in</h4>
-                            <br>
-                            <h5 >As <?php echo $_SESSION['user-role']?></h5>
-                        </a>
-                        
-                    </li>
+                    
                 </ul>
                 
             </nav>

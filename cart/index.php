@@ -267,8 +267,8 @@
                                                     <div class="cart-item">
                                                         <img src="'.$row['image'].'" class="img-thumbnail" alt="">
                                                         <h4>'.$row['name'].'</h4>
-                                                        <p>Price: $'.$row['price'].'</p>
-                                                        <p>Total Price with tax: $'.(($row['price'] * $row['Quantity'])*0.18)+($row['price'] * $row['Quantity']).'</p>
+                                                        <p>Price: Rs.'.$row['price'].'</p>
+                                                        <p>Total Price with tax: Rs.'.(($row['price'] * $row['Quantity'])*0.18)+($row['price'] * $row['Quantity']).'</p>
                                                         <div class="input-group">
                                                             <form method="post">
                                                                 <input type="text" class="d-none" name="cart_id" value="'.$row['cart_id'].'">
@@ -286,8 +286,8 @@
                                 <div class="bill">
                                 <h2>Cart Summary</h2>
                                 <p>Total Items: <?php echo $totalItem?></p>
-                                <p>Total Bill: $<?php echo $totalPrice?></p>
-                                <p>Total Bill with Text: $<?php echo ($totalPrice*0.18)+$totalPrice?></p>
+                                <p>Total Bill: Rs.<?php echo $totalPrice?></p>
+                                <p>Total Bill with Text: Rs.<?php echo ($totalPrice*0.18)+$totalPrice?></p>
                                 </div>
                             </div>
                         </div>

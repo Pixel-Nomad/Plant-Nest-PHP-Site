@@ -178,7 +178,7 @@
                                             <th scope="row">'.$count.'</th>
                                             <td>'.$row['order_secret'].'</td>
                                             <td>'.$row['OrderDate'].'</td>
-                                            <td>$'.$row['Total_Price'].'</td>';
+                                            <td>Rs.'.$row['Total_Price'].'</td>';
                                     if ($row['Status'] == 'Cancelled') {
                                         echo '<td class="text-danger">'.$row['Status'].'</td><td><button type="button" class="btn btn-secondary" disabled>Cancel Order</button></td>';
                                     } elseif ($row['Status'] == 'Pending') {

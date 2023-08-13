@@ -4,19 +4,74 @@
     $connection = mysqli_connect($config['DB_URL'],$config['DB_USERNAME'],$config['DB_PASSWORD'],$config['DB_DATABASE']);
     if (isset($_SESSION['isLoggedin'])){
         if ($_SESSION['user-role'] != 'user') {
-          if (isset($_POST['submit']) && isset($_POST['options'])){
-            $id = $_POST['old-userid'];
-            $role = $_POST['options'];
-            $sql = "UPDATE `users` SET `role` = '$role' WHERE `user_id` = $id";
-            $result = mysqli_query($connection,$sql);
-            if ($result) {
-                if ( $_SESSION['user-role'] == $_POST['old-userid']) {
-                    $_SESSION['user-role'] = $role;
+            if (isset($_POST['submit']) && isset($_POST['id'])){
+                $id = $_POST['id'];
+                $sql = "DELETE FROM `sliders` WHERE `id` = $id";
+                $result = mysqli_query($connection,$sql);
+                if ($result) {
+                    header('location: '. $config['URL'].'/admin/management/sliders');
+                    exit(); 
                 }
-                header('location: '. $config['URL'].'/admin/user/management');
-                exit(); 
             }
-        } 
+            if (isset($_POST['submit2']) && isset($_POST['sliderid'])){
+                $oldid = $_POST['old-sliderid'];
+                $id = $_POST['sliderid'];
+                $sliderimage = $_POST['sliderimage'];
+                $slidertext = $_POST['slidertext'];
+                $sliderdescription = $_POST['sliderdescription'];
+                $sliderdark = $_POST['sliderdark'];
+                if ($sliderdark != 'yes' && $sliderdark != 'no') {
+                    $sliderdark = 'no';
+                }
+                
+                $sql = "UPDATE `sliders` SET `id` = $id, `image` = '$sliderimage', 
+                `text` = '$slidertext', `description` = '$sliderdescription' , `dark` = '$sliderdark' WHERE `id` = $oldid";
+                $result = mysqli_query($connection,$sql);
+                if ($result) {
+                    header('location: '. $config['URL'].'/admin/management/sliders');
+                    exit(); 
+                }
+            }
+            if (isset($_POST['submit3']) && isset($_POST['new-id']) && isset($_POST['new-image'])){
+                $id = $_POST['new-id'];
+                $image = $_POST['new-image'];
+                $text = $_POST['new-text'];
+                $description = $_POST['new-description'];
+                $dark = $_POST['new-dark'];
+                if ($dark != 'yes' && $dark != 'no') {
+                    $dark = 'no';
+                }
+                if ($id >= 1) {
+                    $sql = "SELECT * FROM `sliders` WHERE id = $id";
+                    $result = mysqli_query($connection,$sql);
+                    $total  = mysqli_num_rows($result);
+                    if ($total >= 1) {
+                        $sql2 = "INSERT INTO `sliders` (`image`,`text`,`description`,`dark`) 
+                        VALUES ('$image','$text','$description','$dark')";
+                        $result2 = mysqli_query($connection,$sql2);
+                        if ($result2) {
+                            header('location: '. $config['URL'].'/admin/management/sliders');
+                            exit(); 
+                        }
+                    } else {
+                        $sql2 = "INSERT INTO `sliders` (`id`,`image`,`text`,`description`,`dark`) 
+                        VALUES ('$id','$image','$text','$description','$dark')";
+                        $result2 = mysqli_query($connection,$sql2);
+                        if ($result2) {
+                            header('location: '. $config['URL'].'/admin/management/sliders');
+                            exit(); 
+                        }
+                    }
+                } else {
+                    $sql = "INSERT INTO `sliders` (`image`,`text`,`description`,`dark`) 
+                    VALUES ('$image','$text','$description','$dark')";
+                    $result = mysqli_query($connection,$sql);
+                    if ($result) {
+                        header('location: '. $config['URL'].'/admin/management/sliders');
+                        exit(); 
+                    }
+                }
+            }
         } else {
             header('location: '. $config['URL'].'/user/login');
             exit(); 
@@ -164,10 +219,10 @@
                         </a>
                         </li>
                         <li>
-                        <a href='<?php echo $config['URL']?>/admin/management/orders' class="nav-link px-3">
-                            <span class="me-2"><i class="bi bi-speedometer2"></i></span>
-                            <span>Order Management</span>
-                        </a>
+                          <a href='<?php echo $config['URL']?>/admin/management/orders' class="nav-link px-3">
+                              <span class="me-2"><i class="bi bi-speedometer2"></i></span>
+                              <span>Order Management</span>
+                          </a>
                         </li>
                         <li>
                           <a href='<?php echo $config['URL']?>/admin/management/list' class="nav-link px-3">
@@ -191,7 +246,7 @@
                     </a>
                 </li>
                 <li>
-                    <a href='<?php echo $config['URL']?>/admin/management/sliders' class="nav-link px-3">
+                    <a href='<?php echo $config['URL']?>/admin/management/sliders' class="nav-link px-3 active">
                       <span class="me-2"><i class="bi bi-speedometer2"></i></span>
                       <span>Slider Tool</span>
                     </a>
@@ -205,7 +260,7 @@
                     </div>
                 </li>
                 <li>
-                    <a href='<?php echo $config['URL']?>/admin/user/management' class="nav-link active px-3">
+                    <a href='<?php echo $config['URL']?>/admin/user/management' class="nav-link px-3">
                     <span class="me-2"><i class="bi bi-speedometer2"></i></span>
                     <span>User Management</span>
                     </a>
@@ -219,14 +274,41 @@
     <div class="container-fluid">
       <div class="row">
         <div class="col-md-12">
-          <h4>User Management</h4>
+          <h4>Slider Tool</h4>
         </div>
+        <div class="col">
+            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                <form method="post">
+                    <div class="input-group mb-3 mt-5">
+                        <div class="row row-cols-1 row-cols-md-1">
+                            <div class="col mb-2">
+                                <input type="textnumber" class="form-control" value="0" required placeholder="New Slider ID" name="new-id" aria-label="New Slider ID" aria-describedby="button-addon2">
+                            </div>
+                            <div class="col mb-2">
+                                <input type="url" class="form-control" required placeholder="New Slider Image" name="new-image" aria-label="New Slider Image" aria-describedby="button-addon2">
+                            </div>
+                            <div class="col mb-2">
+                                <input type="text" class="form-control" required placeholder="New Slider Text" name="new-text" aria-label="New Slider Text" aria-describedby="button-addon2">
+                            </div>
+                            <div class="col mb-2">
+                                <input type="text" class="form-control" required  placeholder="New Slider Description" name="new-description" aria-label="New Slider Description" aria-describedby="button-addon2">
+                            </div>
+                            <div class="col mb-2">
+                                <input type="text" class="form-control" required  placeholder="New Slider DarkText" name="new-dark" aria-label="New Slider DarkText" aria-describedby="button-addon2">
+                            </div>
+                            <div class="col mb-2">
+                                <input type="submit" class="btn btn-outline-secondary" id="button-addon2" value="Insert" name="submit3">
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
       </div>
       <div class="row">
         <div class="col-md-12 mb-3">
           <div class="card">
             <div class="card-header">
-              <span><i class="bi bi-table me-2"></i></span> User Management
+              <span><i class="bi bi-table me-2"></i></span> Slider Tool
             </div>
             <div class="card-body">
               <div class="table-responsive">
@@ -234,63 +316,46 @@
                   <thead>
                     <tr>
                       <th>ID</th>
-                      <th>User Name</th>
-                      <th>Full Name</th>
-                      <th>Email</th>
-                      <th>Contact</th>
-                      <th>Company</th>
-                      <th>Address</th>
-                      <th>Country</th>
-                      <th>City</th>
-                      <th>Role</th>
-                      <th>Date Created</th>
+                      <th>Image</th>
+                      <th>Text</th>
+                      <th>Description</th>
+                      <th>Dark Text</th>
                       <th class="d-none"></th>
                     </tr>
                   </thead>
                   <tbody>
                     <?php
-                      $sql = "SELECT * FROM `users`";
-                      $result = mysqli_query($connection,$sql);
-                      $total  = mysqli_num_rows($result);
-                      if ($total >= 1) {
-                          while ($row = mysqli_fetch_assoc($result)) {
-                              echo '<tr>
-                              <td>'.$row['user_id'].'</td>
-                              <td>'.$row['username'].'</td>
-                              <td>'.$row['fullname'].'</td>
-                              <td>'.$row['email'].'</td>
-                              <td>'.$row['contact'].'</td>
-                              <td>'.$row['company'].'</td>
-                              <td>'.$row['address'].'</td>
-                              <td>'.$row['country'].'</td>
-                              <td>'.$row['city'].'</td>
-                              <td>'.$row['role'].'</td>
-                              <td>'.$row['date'].'</td>';
-                              if ($_SESSION['user-role'] == 'master'){
-                                echo '<td><button class="btn btn-danger open-review-form"  
-                                data-user-id='.$row['user_id'].'
-                                data-user-role="'.$row['role'].'">Update Status</button></td>
-                        </tr>';
-                              }
-                          }
-                      }
+                        $sql = "SELECT * FROM `sliders`";
+                        $result = mysqli_query($connection,$sql);
+                        $total  = mysqli_num_rows($result);
+                        if ($total >= 1) {
+                            while ($row = mysqli_fetch_assoc($result)) {
+                                echo '<tr>
+                                <td>'.$row['id'].'</td>
+                                <td>'.$row['image'].'</td>
+                                <td>'.$row['text'].'</td>
+                                <td>'.$row['description'].'</td>
+                                <td>'.$row['dark'].'</td>
+                                <td><button class="btn btn-danger open-review-form"  data-slider-id="'.$row['id'].'" data-slider-image="'.$row['image'].'"
+                                data-slider-text="'.$row['text'].'" data-slider-description="'.$row['description'].'" data-slider-dark="'.$row['dark'].'">Update</button>
+                                <form method="post" class="mt-3">
+                                    <input type="text" class="d-none" value="'.$row['id'].'" name="id"></input>
+                                    <input type="submit" class="btn btn-danger" value="Delete" name="submit"></input>
+                                </form></td>
+                              </tr>';
+                            }
+                        }
                     ?>
-                    
-                    
                   </tbody>
                   <tfoot>
-                  <th>ID</th>
-                      <th>User Name</th>
-                      <th>Full Name</th>
-                      <th>Email</th>
-                      <th>Contact</th>
-                      <th>Company</th>
-                      <th>Address</th>
-                      <th>Country</th>
-                      <th>City</th>
-                      <th>Role</th>
-                      <th>Date Created</th>
+                    <tr>
+                        <th>ID</th>
+                      <th>Image</th>
+                      <th>Text</th>
+                      <th>Description</th>
+                      <th>Dark Text</th>
                       <th class="d-none"></th>
+                    </tr>
                   </tfoot>
                 </table>
               </div>
@@ -305,28 +370,23 @@
             <button class="close-review-form" id="closeReviewForm"><i class="fas fa-times"></i></button>
             <h2 class="mb-4">Update</h2>
             <form method="post">
-            <label for="reviewText" class="form-label">Category ID</label>
-            <div class="form-check">
-                <input class="form-check-input" type="radio" name="options" id="user" value="user" checked>
-                <label class="form-check-label" for="user">
-                    user
-                </label>
-            </div>
-            <div class="form-check">
-                <input class="form-check-input" type="radio" name="options" id="admin" value="admin" checked>
-                <label class="form-check-label" for="admin">
-                admin
-                </label>
-            </div>
-            <div class="form-check">
-                <input class="form-check-input" type="radio" name="options" id="master" value="master" checked>
-                <label class="form-check-label" for="master">
-                    master
-                </label>
-            </div>
-            <input type="number" class="d-none" id="old-userid" name="old-userid" value="">
+            <label for="reviewText" class="form-label">ID</label>
+            <input type="number" class="d-none" id="old-sliderid" name="old-sliderid" value="">
+            <input type="number" class="form-control" id="sliderid" name="sliderid" value="">
             <br>
-            <input type="submit" class="btn btn-primary" value="Update" name="submit"></input>
+            <label for="reviewText" class="form-label">Image</label>
+            <input type="url" class="form-control" id="sliderimage" name="sliderimage" value="">
+            <br>
+            <label for="reviewText" class="form-label">Text</label>
+            <input type="text" class="form-control" id="slidertext" name="slidertext" value="">
+            <br>
+            <label for="reviewText" class="form-label">Description</label>
+            <input type="text" class="form-control" id="sliderdescription" name="sliderdescription" value="">
+            <br>
+            <label for="reviewText" class="form-label">Dark Text ( yes or no )</label>
+            <input type="text" class="form-control" id="sliderdark" name="sliderdark" value="">
+            <br>
+            <input type="submit" class="btn btn-primary" value="Submit" name="submit2"></input>
             <br>
             </form>
         </div>
@@ -338,24 +398,29 @@
     <script src="<?php echo $config['URL']?>/assets/js/dataTables.bootstrap5.min.js"></script>
     <script src="<?php echo $config['URL']?>/assets/js/script.js"></script>
     <script>
-        function replaceSpacesWithHyphens(inputString) {
-            return inputString.replace(/\s/g, '-');
-        }
         const openReviewFormButtons = document.querySelectorAll(".open-review-form");
 
         // Add a click event listener to each button
         openReviewFormButtons.forEach(button => {
         button.addEventListener("click", function () {
-            const id = button.getAttribute("data-user-id");
-            const role = button.getAttribute("data-user-role");
-            openReviewForm(id, role);
+            const sliderid = button.getAttribute("data-slider-id");
+            const sliderimage = button.getAttribute("data-slider-image");
+            const slidertext = button.getAttribute("data-slider-text");
+            const sliderdescription = button.getAttribute("data-slider-description");
+            const sliderdark = button.getAttribute("data-slider-dark");
+            console.log()
+            openReviewForm(sliderid, sliderimage, slidertext, sliderdescription, sliderdark);
         });
         });
 
         // Function to open the review form with a predefined plant_id
-        function openReviewForm(id, role) {
-            document.getElementById("old-userid").value = id;
-            document.getElementById(replaceSpacesWithHyphens(role)).checked = true;
+        function openReviewForm(sliderid, sliderimage, slidertext, sliderdescription, sliderdark) {
+            document.getElementById("sliderid").value = sliderid;
+            document.getElementById("old-sliderid").value = sliderid;
+            document.getElementById("sliderimage").value = sliderimage;
+            document.getElementById("slidertext").value = slidertext;
+            document.getElementById("sliderdescription").value = sliderdescription;
+            document.getElementById("sliderdark").value = sliderdark;
             document.getElementById("reviewFormOverlay").style.display = "flex";
         }
 

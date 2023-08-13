@@ -86,7 +86,7 @@
                 aria-controls="offcanvasExample">
                 <span class="navbar-toggler-icon" data-bs-target="#sidebar"></span>
             </button>
-            <a class="navbar-brand me-auto ms-lg-0 ms-3 text-uppercase fw-bold" href="#">Admin Panel</a>
+            <a class="navbar-brand me-auto ms-lg-0 ms-3 text-uppercase fw-bold" href="#">Admin Panel ( Logged in as <?php echo $_SESSION['user-role']?> )</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#topNavBar"
                 aria-controls="topNavBar" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
@@ -166,6 +166,12 @@
                             <span>Order Management</span>
                         </a>
                         </li>
+                        <li>
+                          <a href='<?php echo $config['URL']?>/admin/management/list' class="nav-link px-3">
+                              <span class="me-2"><i class="bi bi-speedometer2"></i></span>
+                              <span>Order List</span>
+                          </a>
+                        </li>
                     </ul>
                     </div>
                 </li>
@@ -179,6 +185,12 @@
                     <a href='<?php echo $config['URL']?>/admin/user/feedbacks' class="nav-link px-3">
                     <span class="me-2"><i class="bi bi-speedometer2"></i></span>
                     <span>User Feedbacks</span>
+                    </a>
+                </li>
+                <li>
+                    <a href='<?php echo $config['URL']?>/admin/management/sliders' class="nav-link px-3">
+                      <span class="me-2"><i class="bi bi-speedometer2"></i></span>
+                      <span>Slider Tool</span>
                     </a>
                 </li>
                 <li class="my-4">
@@ -195,92 +207,84 @@
                     <span>User Management</span>
                     </a>
                 </li>
-                <li class="fixed-bottom">
-                    <a class="nav-link px-3">
-                        <h4>Logged in</h4>
-                        <br>
-                        <h5 >As <?php echo $_SESSION['user-role']?></h5>
-                    </a>
-                    
-                </li>
                 </ul>
                 
             </nav>
         </div>
     </div>
     <main class="mt-5 pt-3">
-    <div class="container-fluid">
-      <div class="row">
-        <div class="col-md-12">
-          <h4>Order Management</h4>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col-md-12 mb-3">
-          <div class="card">
-            <div class="card-header">
-              <span><i class="bi bi-table me-2"></i></span> Order Management
+        <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+            <h4>Order Management</h4>
             </div>
-            <div class="card-body">
-              <div class="table-responsive">
-                <table id="example" class="table table-striped data-table" style="width: 100%">
-                  <thead>
-                    <tr>
-                      <th>ID</th>
-                      <th>User</th>
-                      <th>Order Secret</th>
-                      <th>Order Date</th>
-                      <th>Total Amount</th>
-                      <th>Total Price</th>
-                      <th>Status</th>
-                      <th class="d-none"></th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <?php   
-                        $sql = "SELECT * FROM orders INNER JOIN users ON orders.user_id = users.user_id";
-                        $result = mysqli_query($connection,$sql);
-                        $total  = mysqli_num_rows($result);
-                        if ($total >= 1) {
-                            while ($row = mysqli_fetch_assoc($result)) {
-                                echo '<tr>
-                                <td>'.$row['order_id'].'</td>
-                                <td>'.$row['username'].'</td>
-                                <td>'.$row['order_secret'].'</td>
-                                <td>'.$row['OrderDate'].'</td>
-                                <td>'.$row['Total_Amount'].'</td>
-                                <td>'.$row['Total_Price'].'</td>
-                                <td>'.$row['Status'].'</td>
-                                <td><button class="btn btn-danger open-review-form"  
-                                data-order-id="'.$row['order_id'].'" 
-                                data-order-status="'.$row['Status'].'">Update Status</button></td>
-                                </tr>';
+        </div>
+        <div class="row">
+            <div class="col-md-12 mb-3">
+            <div class="card">
+                <div class="card-header">
+                <span><i class="bi bi-table me-2"></i></span> Order Management
+                </div>
+                <div class="card-body">
+                <div class="table-responsive">
+                    <table id="example" class="table table-striped data-table" style="width: 100%">
+                    <thead>
+                        <tr>
+                        <th>ID</th>
+                        <th>User</th>
+                        <th>Order Secret</th>
+                        <th>Order Date</th>
+                        <th>Total Amount</th>
+                        <th>Total Price</th>
+                        <th>Status</th>
+                        <th class="d-none"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php   
+                            $sql = "SELECT * FROM orders INNER JOIN users ON orders.user_id = users.user_id";
+                            $result = mysqli_query($connection,$sql);
+                            $total  = mysqli_num_rows($result);
+                            if ($total >= 1) {
+                                while ($row = mysqli_fetch_assoc($result)) {
+                                    echo '<tr>
+                                    <td>'.$row['order_id'].'</td>
+                                    <td>'.$row['username'].'</td>
+                                    <td>'.$row['order_secret'].'</td>
+                                    <td>'.$row['OrderDate'].'</td>
+                                    <td>'.$row['Total_Amount'].'</td>
+                                    <td>Rs.'.$row['Total_Price'].'</td>
+                                    <td>'.$row['Status'].'</td>
+                                    <td><button class="btn btn-danger open-review-form"  
+                                    data-order-id="'.$row['order_id'].'" 
+                                    data-order-status="'.$row['Status'].'">Update Status</button></td>
+                                    </tr>';
+                                }
                             }
-                        }
-                    ?>
-                    
-                    
-                  </tbody>
-                  <tfoot>
-                    <tr>
-                      <th>ID</th>
-                      <th>User</th>
-                      <th>Order Secret</th>
-                      <th>Order Date</th>
-                      <th>Total Amount</th>
-                      <th>Total Price</th>
-                      <th>Status</th>
-                      <th class="d-none"></th>
-                    </tr>
-                  </tfoot>
-                </table>
-              </div>
+                        ?>
+                        
+                        
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                        <th>ID</th>
+                        <th>User</th>
+                        <th>Order Secret</th>
+                        <th>Order Date</th>
+                        <th>Total Amount</th>
+                        <th>Total Price</th>
+                        <th>Status</th>
+                        <th class="d-none"></th>
+                        </tr>
+                    </tfoot>
+                    </table>
+                </div>
+                </div>
             </div>
-          </div>
+            </div>
         </div>
-      </div>
-    </div>
-  </main>
+        </div>
+    </main>
   <div class="review-form-overlay" id="reviewFormOverlay">
         <div class="review-form">
             <button class="close-review-form" id="closeReviewForm"><i class="fas fa-times"></i></button>

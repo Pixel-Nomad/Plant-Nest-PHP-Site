@@ -90,7 +90,7 @@
                     </div>
                 </li>
                 <li>
-                    <a class="nav-link px-3 sidebar-link" data-bs-toggle="collapse" data-bs-toggle="layouts" href="#layouts">
+                    <a class="nav-link px-3 sidebar-link active" data-bs-toggle="collapse" data-bs-toggle="layouts" href="#layouts">
                     <span class="me-2"><i class="bi bi-speedometer2"></i></span>
                     <span>Products</span>
                     <span class="ms-auto">
@@ -99,7 +99,7 @@
                         </span>
                     </span>
                     </a>
-                    <div class="collapse" id="layouts">
+                    <div class="collapse show" id="layouts">
                     <ul class="navbar-nav ps-3">
                         <li>
                         <a href='<?php echo $config['URL']?>/admin/management/category' class="nav-link px-3">
@@ -114,13 +114,13 @@
                         </a>
                         </li>
                         <li>
-                        <a href='<?php echo $config['URL']?>/admin/management/orders' class="nav-link px-3">
-                            <span class="me-2"><i class="bi bi-speedometer2"></i></span>
-                            <span>Order Management</span>
-                        </a>
+                          <a href='<?php echo $config['URL']?>/admin/management/orders' class="nav-link px-3">
+                              <span class="me-2"><i class="bi bi-speedometer2"></i></span>
+                              <span>Order Management</span>
+                          </a>
                         </li>
                         <li>
-                          <a href='<?php echo $config['URL']?>/admin/management/list' class="nav-link px-3">
+                          <a href='<?php echo $config['URL']?>/admin/management/list' class="nav-link px-3 active">
                               <span class="me-2"><i class="bi bi-speedometer2"></i></span>
                               <span>Order List</span>
                           </a>
@@ -135,7 +135,7 @@
                     </a>
                 </li>
                 <li>
-                    <a href='<?php echo $config['URL']?>/admin/user/feedbacks' class="nav-link px-3 active">
+                    <a href='<?php echo $config['URL']?>/admin/user/feedbacks' class="nav-link px-3">
                     <span class="me-2"><i class="bi bi-speedometer2"></i></span>
                     <span>User Feedbacks</span>
                     </a>
@@ -169,40 +169,36 @@
     <div class="container-fluid">
       <div class="row">
         <div class="col-md-12">
-          <h4>User Feedbacks</h4>
+          <h4>Order List</h4>
         </div>
       </div>
       <div class="row">
         <div class="col-md-12 mb-3">
           <div class="card">
             <div class="card-header">
-              <span><i class="bi bi-table me-2"></i></span> User Feedbacks
+              <span><i class="bi bi-table me-2"></i></span> Catagory Management
             </div>
             <div class="card-body">
               <div class="table-responsive">
                 <table id="example" class="table table-striped data-table" style="width: 100%">
                   <thead>
                     <tr>
-                      <th>ID</th>
-                      <th>User ID</th>
-                      <th>Message</th>
-                      <th>Satisfaction</th>
-                      <th>Feedback Date</th>
+                      <th>ORDER ID</th>
+                      <th>Plant ID</th>
+                      <th>Quantity</th>
                     </tr>
                   </thead>
                   <tbody>
                     <?php
-                        $sql = "SELECT * FROM `feedbacks`";
+                        $sql = "SELECT * FROM `order_items`";
                         $result = mysqli_query($connection,$sql);
                         $total  = mysqli_num_rows($result);
                         if ($total >= 1) {
                             while ($row = mysqli_fetch_assoc($result)) {
                                 echo '<tr>
-                                <td>'.$row['id'].'</td>
-                                <td>'.$row['user_id'].'</td>
-                                <td>'.$row['message'].'</td>
-                                <td>'.$row['satisfaction'].'</td>
-                                <td>'.$row['Feedback_Date'].'</td>
+                                <th>'.$row['order_secret'].'</th>
+                                <th>'.$row['plant_id'].'</th>
+                                <th>'.$row['quantity'].'</th>
                               </tr>';
                             }
                         }
@@ -210,11 +206,9 @@
                   </tbody>
                   <tfoot>
                     <tr>
-                        <th>ID</th>
-                      <th>User ID</th>
-                      <th>Message</th>
-                      <th>Satisfaction</th>
-                      <th>Feedback Date</th>
+                    <th>ORDER ID</th>
+                      <th>Plant ID</th>
+                      <th>Quantity</th>
                     </tr>
                   </tfoot>
                 </table>

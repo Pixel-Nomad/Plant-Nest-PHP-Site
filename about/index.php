@@ -122,7 +122,7 @@
             <div class="row row-cols-1 row-cols-md-2">
                 <div class="col-md-6 mt-4 pt-5">
                     <h2 class="text-center">About us</h2>
-                    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Tempore delectus doloribus quas, deleniti ad nobis voluptates similique commodi fuga optio, ex aperiam inventore vitae architecto repudiandae deserunt iure dolor necessitatibus.Lorem ipsum dolor sit amet consectetur adipisicing elit. Tempore delectus doloribus quas, deleniti ad nobis voluptates similique commodi fuga optio, ex aperiam inventore vitae architecto repudiandae deserunt iure dolor necessitatibus.Lorem ipsum dolor sit amet consectetur adipisicing elit. Tempore delectus doloribus quas, deleniti ad nobis voluptates similique commodi fuga optio, ex aperiam inventore vitae architecto repudiandae deserunt iure dolor necessitatibus.Lorem ipsum dolor sit amet consectetur adipisicing elit. Tempore delectus doloribus quas, deleniti ad nobis voluptates similique commodi fuga optio, ex aperiam inventore vitae architecto repudiandae deserunt iure dolor necessitatibus.Lorem ipsum dolor sit amet consectetur adipisicing elit. Tempore delectus doloribus quas, deleniti ad nobis voluptates similique commodi fuga optio, ex aperiam inventore vitae architecto repudiandae deserunt iure dolor necessitatibus.</p>
+                    <p>Plant Nest is an online facility for plant enthusiasts who have a habit of collecting and treasuring many plant species. Rather than spending tiring hours in traditional plant shops and markets, we provide an online platform for researching and purchasing various gardening essentials from the comfort of our own homes. We aim to modify and ease the process of setting up and maintaining personal gardens which is a great source of pleasure for many. Our objective is to create an interactive and satisfied customer outreach. Due to the nature of our business, we are available 24/7 and we hope to provide you key gardening requisites at reasonable prices and favorable delivery times.</p>
                 </div>
                 <div class="col-md-4 mt-4">
                     <img src='<?php echo $config['URL']?>/assets/image/logos/logo.png' class="rounded mx-auto d-block ps-5" alt='<?php echo $config['URL']?>/assets/image/logos/logo7.png'>
@@ -135,14 +135,14 @@
         <!-- Left Image Card -->
         <div class="col-md-6">
             <div class="card mb-4">
-            <img src='<?php echo $config['URL']?>/assets/image/logos/logo.png' class="card-img-top" alt="Left Image">
+            <img src='<?php echo $config['URL']?>/assets/image/about/7.webp' class="card-img-top" alt="Left Image">
             </div>
         </div>
 
         <!-- Right Image Card -->
         <div class="col-md-6">
             <div class="card mb-4">
-            <img src='<?php echo $config['URL']?>/assets/image/logos/logo.png' class="card-img-top" alt="Right Image">
+            <img src='<?php echo $config['URL']?>/assets/image/about/6.webp' class="card-img-top" alt="Right Image">
 
             </div>
         </div>
@@ -152,11 +152,11 @@
         <div class="row">
             <div class="col-md-6">
                 <h2>Who we are.</h2>
-                <p style="text-align: left;">We’re the longest-running WordPress.org recommended host, supported by the world’s most popular site builder. We provide comprehensive tools globally so anyone, novice or pro, can thrive online.</p>
+                <p style="text-align: left;">Plant Nest is a dedicated online haven designed for passionate plant enthusiasts who revel in cultivating and cherishing diverse plant varieties. Our platform reimagines the conventional plant shopping experience, offering a virtual space to explore, research, and acquire an array of gardening essentials. With a commitment to convenience and a shared love for cultivating green sanctuaries, Plant Nest is your gateway to a rewarding and interactive gardening journey.</p>
             </div>
             <div class="col-md-6">
                 <h2>What we do.</h2>
-                <p style="text-align: left;">We believe in creating a better, safer web for everyone. We fight spammers, block unwanted pornography, and invest in countless open-source projects to push projects to their full potential. </p>
+                <p style="text-align: left;">At Plant Nest, we revolutionize the process of curating and maintaining personal gardens by providing a seamless online marketplace. By transcending the confines of traditional brick-and-mortar plant shops and markets, we bring gardening aficionados an unparalleled selection of plants and gardening supplies, accessible anytime, anywhere. Our mission is to simplify the journey of setting up and nurturing gardens, offering a diverse range of quality products at affordable prices, coupled with efficient delivery options. With round-the-clock availability, Plant Nest stands as your steadfast companion in creating thriving garden sanctuaries that bring joy and satisfaction.</p>
             </div>
         </div>
     </div>
@@ -168,7 +168,7 @@
         <div class="col">
           <div class="card addHover p-3 mb-5 bg-gradient rounded">
             <img
-              src='<?php echo $config['URL']?>/assets/image/logos/logo.png'
+              src='<?php echo $config['URL']?>/assets/image/about/3.jpeg'
               class="card-img-top image-fluid"
               alt="picture"
             />
@@ -183,7 +183,7 @@
         <div class="col">
           <div class="card addHover p-3 mb-5 bg-gradient rounded">
             <img
-              src='<?php echo $config['URL']?>/assets/image/logos/logo.png'
+              src='<?php echo $config['URL']?>/assets/image/about/2.jpeg'
               class="card-img-top image-fluid"
               alt="picture"
             />
@@ -197,7 +197,7 @@
         <div class="col">
           <div class="card addHover p-3 mb-5 bg-gradient rounded">
             <img
-              src='<?php echo $config['URL']?>/assets/image/logos/logo.png'
+              src='<?php echo $config['URL']?>/assets/image/about/4.jpeg'
               class="card-img-top image-fluid"
               alt="picture"
             />
@@ -211,7 +211,7 @@
         <div class="col">
           <div class="card addHover p-3 mb-5 bg-gradient rounded">
             <img
-              src='<?php echo $config['URL']?>/assets/image/logos/logo.png'
+              src='<?php echo $config['URL']?>/assets/image/about/5.jpeg'
               class="card-img-top image-fluid"
               alt="picture"
             />
@@ -225,7 +225,7 @@
         <div class="col">
           <div class="card addHover p-3 mb-5 bg-gradient rounded">
             <img
-              src='<?php echo $config['URL']?>/assets/image/logos/logo.png'
+              src='<?php echo $config['URL']?>/assets/image/about/1.jpeg'
               class="card-img-top image-fluid"
               alt="picture"
             />

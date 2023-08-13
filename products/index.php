@@ -281,7 +281,7 @@
                                         </div>
                                         <div class="col">
                                             <p class="fw-normal">'.$row['quantity'].'</p>
-                                            <p class="fw-normal text-success">$'.$row['price'].'</p>
+                                            <p class="fw-normal text-success">Rs.'.$row['price'].'</p>
                                         </div>
                                     </div>
                                     <hr class="divider" />

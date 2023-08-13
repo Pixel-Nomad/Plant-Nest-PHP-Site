@@ -43,7 +43,7 @@
         }
     </style>
 </head>
-<body>
+<body background='<?php echo $config['URL']?>/assets/image/pics/bg.jpg'>
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container-fluid">
             <a class="navbar-brand" href="#">
@@ -141,7 +141,7 @@
     </nav>
     <br>
     <br>
-    <div class="container p-2 bg-secondary rounded" style="border: 0.2vh solid black;">
+    <div class="container p-2 bg-success rounded" style="border: 0.2vh solid black;">
         <div class="container bg-light" style="border: 0.2vh solid black;">
           <h1 class ="text-center">Feedback form</h1>
           <br>
@@ -170,7 +170,7 @@
               <br>
               <br>
               <div class="d-grid gap-2">
-                <input class="btn btn-primary" value='Submit Feedback' name="submit" type="submit"></input>
+                <input class="btn btn-success" value='Submit Feedback' name="submit" type="submit"></input>
               </div>
             </div>
               <br>

@@ -52,10 +52,8 @@
                 $unique      = true;
                 if ($_SESSION['user-username'] != $_POST['username']) {
                     $username    = $_POST['username'];
-                    echo $username;
                     $search      = "SELECT * FROM users WHERE username = '".$username."'";
                     $result      = mysqli_query($connection, $search);
-                    echo $total;
                     if ($result) {
                         while ($row = mysqli_fetch_assoc($result)) {
                             if ($row['username'] == $username){
@@ -65,10 +63,8 @@
                     }
                 }
                 $username    = $_POST['username'];
-                    echo $username;
                 if ($total == 1 && $unique){
                     $username    = $_POST['username'];
-                    echo $username;
                     $sql = "SELECT * FROM `users` WHERE `user_id`= '$id' AND `password` = '$encrypt'";
                     $result = mysqli_query($connection,$sql);
                     $total  = mysqli_num_rows($result);
@@ -91,8 +87,6 @@
                     $_SESSION['user-fullname'] = $_SESSION['user-fullname'];
                     $result2 = mysqli_query($connection,$sql2);
                     if ($result2) {
-                        echo $_SESSION['user-username'];
-                        echo $_POST['username'];
                         $_SESSION['user-username'] = ($_SESSION['user-username'] != $_POST['username']) ? $_POST['username'] : $_SESSION['user-username'];
                         $_SESSION['user-fullname'] = ($_SESSION['user-fullname'] != $_POST['fullname']) ? $_POST['fullname'] : $_SESSION['user-fullname'];
                         $_SESSION['user-contact'] = ($_SESSION['user-contact'] != $_POST['contact']) ? $_POST['contact'] : $_SESSION['user-contact'];

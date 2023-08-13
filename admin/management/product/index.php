@@ -26,13 +26,12 @@
                 $sql = "UPDATE `plants` SET 
                 `plant_id` = $plantid, 
                 `name` = '$plantname', 
-                `description` = '$plantdescription', 
+                `description` = \"$plantdescription\", 
                 `price` = '$plantprice', 
                 `quantity` = '$plantquantity', 
                 `image` = '$plantimage', 
                 `featured` = '$plantfeatured', 
                 `category_id` = '$plantcategory' WHERE `plant_id` = $oldid";
-                echo
                 $result = mysqli_query($connection,$sql);
                 $sql2 = "UPDATE `cart` SET `plant_id` = $plantid WHERE `plant_id` = $oldid";
                 $sql3 = "UPDATE `order_items` SET `plant_id` = $plantid WHERE `plant_id` = $oldid";
@@ -59,7 +58,7 @@
                     $total  = mysqli_num_rows($result);
                     if ($total >= 1) {
                         $sql2 = "INSERT INTO `plants` (`name`,`description`,`price`,`quantity`,`image`,`category_id`) 
-                        VALUES ('$name','$description',$price,$quantity,'$image','$category')";
+                        VALUES ('$name',\"$description\",$price,$quantity,'$image','$category')";
                         $result2 = mysqli_query($connection,$sql2);
                         if ($result2) {
                             header('location: '. $config['URL'].'/admin/management/category');
@@ -67,7 +66,7 @@
                         }
                     } else {
                         $sql2 = "INSERT INTO `plants` (`plant_id`,`name`,`description`,`price`,`quantity`,`image`,`category_id`) 
-                        VALUES ($id,'$name','$description',$price,$quantity,'$image','$category')";
+                        VALUES ($id,'$name',\"$description\",$price,$quantity,'$image','$category')";
                         $result2 = mysqli_query($connection,$sql2);
                         if ($result2) {
                             header('location: '. $config['URL'].'/admin/management/category');
@@ -76,8 +75,7 @@
                     }
                 } else {
                     $sql = "INSERT INTO `plants` (`name`,`description`,`price`,`quantity`,`image`,`category_id`) 
-                    VALUES ('$name','$description',$price,$quantity,'$image','$category')";
-                    echo $sql;
+                    VALUES ('$name',\"$description\",$price,$quantity,'$image','$category')";
                     $result = mysqli_query($connection,$sql);
                     if ($result) {
                         // header('location: '. $config['URL'].'/admin/management/category');
@@ -157,7 +155,7 @@
                 aria-controls="offcanvasExample">
                 <span class="navbar-toggler-icon" data-bs-target="#sidebar"></span>
             </button>
-            <a class="navbar-brand me-auto ms-lg-0 ms-3 text-uppercase fw-bold" href="#">Admin Panel</a>
+            <a class="navbar-brand me-auto ms-lg-0 ms-3 text-uppercase fw-bold" href="#">Admin Panel ( Logged in as <?php echo $_SESSION['user-role']?> )</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#topNavBar"
                 aria-controls="topNavBar" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
@@ -237,6 +235,12 @@
                             <span>Order Management</span>
                         </a>
                         </li>
+                        <li>
+                          <a href='<?php echo $config['URL']?>/admin/management/list' class="nav-link px-3">
+                              <span class="me-2"><i class="bi bi-speedometer2"></i></span>
+                              <span>Order List</span>
+                          </a>
+                        </li>
                     </ul>
                     </div>
                 </li>
@@ -252,6 +256,12 @@
                     <span>User Feedbacks</span>
                     </a>
                 </li>
+                <li>
+                    <a href='<?php echo $config['URL']?>/admin/management/sliders' class="nav-link px-3">
+                      <span class="me-2"><i class="bi bi-speedometer2"></i></span>
+                      <span>Slider Tool</span>
+                    </a>
+                </li>
                 <li class="my-4">
                     <hr class="dropdown-divider bg-light" />
                 </li>
@@ -265,14 +275,6 @@
                     <span class="me-2"><i class="bi bi-speedometer2"></i></span>
                     <span>User Management</span>
                     </a>
-                </li>
-                <li class="fixed-bottom">
-                    <a class="nav-link px-3">
-                        <h4>Logged in</h4>
-                        <br>
-                        <h5 >As <?php echo $_SESSION['user-role']?></h5>
-                    </a>
-                    
                 </li>
                 </ul>
                 
@@ -291,13 +293,13 @@
                             <div class="input-group mb-3">
                                 <div class="row row-cols-1 row-cols-md-1">
                                     <div class="col mb-2">
-                                        <input type="text" class="form-control" required placeholder="New Plant ID" name="new-id" aria-label="New Plant ID" aria-describedby="button-addon2">
+                                        <input type="text" class="form-control" value="0" required placeholder="New Plant ID" name="new-id" aria-label="New Plant ID" aria-describedby="button-addon2">
                                     </div>
                                     <div class="col mb-2">
                                         <input type="text" class="form-control" required placeholder="New Plant Name" name="new-name" aria-label="New Plant Name" aria-describedby="button-addon2">
                                     </div>
                                     <div class="col mb-2">
-                                        <input type="text" class="form-control" required placeholder="New Plant Description" name="new-description" aria-label="New Plant Description" aria-describedby="button-addon2">
+                                        <textarea class="form-control" id="reviewText" name="new-description" required placeholder="New Plant Description" aria-label="New Plant Description" aria-describedby="button-addon2"></textarea>
                                     </div>
                                     <div class="col mb-2">
                                         <input type="number" class="form-control" required placeholder="New Plant Price" name="new-price" aria-label="New Plant Price" aria-describedby="button-addon2">
@@ -339,13 +341,12 @@
                                             <th>Image</th>
                                             <th>Featured</th>
                                             <th>Category_id</th>
-                                            <th>Category_name</th>
                                             <th class="d-none"></th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <?php
-                                            $sql = "SELECT * FROM plants INNER JOIN category ON plants.category_id = category.category_id";
+                                            $sql = "SELECT * FROM `plants`";
                                             $result = mysqli_query($connection,$sql);
                                             $total  = mysqli_num_rows($result);
                                             if ($total >= 1) {
@@ -354,12 +355,11 @@
                                                             <td>'.$row['plant_id'].'</td>
                                                             <td>'.$row['name'].'</td>
                                                             <td>'.$row['description'].'</td>
-                                                            <td>$'.$row['price'].'</td>
+                                                            <td>Rs.'.$row['price'].'</td>
                                                             <td>'.$row['quantity'].'</td>
                                                             <td>'.$row['image'].'</td>
                                                             <td>'.$row['featured'].'</td>
                                                             <td>'.$row['category_id'].'</td>
-                                                            <td>'.$row['Name'].'</td>
                                                             <td>
                                                                 <button class="btn btn-danger open-review-form"  
                                                                 data-plant-id="'.$row['plant_id'].'" 
@@ -416,7 +416,7 @@
                     <br>
                     <div class="mb-3">
                         <label for="reviewText" class="form-label">Description</label>
-                        <textarea class="form-control" id="reviewText" name="plantdescription" rows="4" required></textarea>
+                        <textarea class="form-control" id="reviewText" name="plantdescription" required></textarea>
                     </div>
                     <label for="reviewText" class="form-label">Price</label>
                     <input type="number" class="form-control" id="plantprice" name="plantprice" value="">
