@@ -266,11 +266,15 @@
                               <td>'.$row['city'].'</td>
                               <td>'.$row['role'].'</td>
                               <td>'.$row['date'].'</td>';
-                              if ($_SESSION['user-role'] == 'master'){
-                                echo '<td><button class="btn btn-danger open-review-form"  
-                                data-user-id='.$row['user_id'].'
-                                data-user-role="'.$row['role'].'">Update Status</button></td>
-                        </tr>';
+                              if ($_SESSION['user-role'] == 'master' ){
+                                if ($row['user_id'] != $_SESSION['user-id']) {
+                                    echo '<td><button class="btn btn-danger open-review-form"  
+                                    data-user-id='.$row['user_id'].'
+                                    data-user-role="'.$row['role'].'">Update Status</button></td>
+                                    </tr>';
+                                } else {
+                                    echo "<td>Can't Manage self role</td>";
+                                }
                               }
                           }
                       }
