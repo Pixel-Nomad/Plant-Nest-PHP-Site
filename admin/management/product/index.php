@@ -416,7 +416,7 @@
                     <br>
                     <div class="mb-3">
                         <label for="reviewText" class="form-label">Description</label>
-                        <textarea class="form-control" id="reviewText" name="plantdescription" required></textarea>
+                        <textarea class="form-control" id="plantdescription" name="plantdescription" required></textarea>
                     </div>
                     <label for="reviewText" class="form-label">Price</label>
                     <input type="number" class="form-control" id="plantprice" name="plantprice" value="">
@@ -486,7 +486,7 @@
             document.getElementById("plantid").value = plantid;
             document.getElementById("old-plantid").value = plantid;
             document.getElementById("plantname").value = plantname;
-            document.getElementById("reviewText").value = plantdescription;
+            document.getElementById("plantdescription").value = plantdescription;
             document.getElementById("plantprice").value = plantprice;
             document.getElementById("plantquantity").value = plantquantity;
             document.getElementById("plantimage").value = plantimage;

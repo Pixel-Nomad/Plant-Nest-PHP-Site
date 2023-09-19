@@ -82,6 +82,11 @@
                 if (isset($_SESSION['isLoggedin'])){
                 ?>
                 <ul class="navbar-nav">
+                <li class="nav-item">
+                        <a class="nav-link text-light">
+                          Welcome <strong><?php echo $_SESSION['user-username'];?></strong>
+                        </a>
+                    </li>
                     <li class="nav-item">
                         <a class="nav-link text-light" href='<?php echo $config['URL']?>/cart/'>
                             <i class="fas fa-shopping-cart"></i>

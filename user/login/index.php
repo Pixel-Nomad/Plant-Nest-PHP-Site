@@ -121,6 +121,11 @@
                 if (isset($_SESSION['isLoggedin'])){
                 ?>
                 <ul class="navbar-nav">
+                <li class="nav-item">
+                        <a class="nav-link text-light">
+                          Welcome <strong><?php echo $_SESSION['user-username'];?></strong>
+                        </a>
+                    </li>
                     <li class="nav-item">
                         <a class="nav-link text-light" href='<?php echo $config['URL']?>/cart/'>
                             <i class="fas fa-shopping-cart"></i>
@@ -257,15 +262,17 @@
         </div>
         <div class="col pt-5">
             <h5>Contact Us</h5>
-            <p>Email: plantnest@gmail.com</p>
-            <p>Phone: 0000-0000000</p>
-            <p>Address: Clifton,Karachi, Pakistan</p>
+            <a href="mailto:mr.tgamer247797704@gmail.com">Email: mr.tgamer247797704@gmail.com</a>
+            <br>
+            <br>
+            <p>Phone: +923082838448</p>
+            <p>Address: Clifton Block 8,Karachi, Pakistan</p>
         </div>
        <div class="col pt-5">
-        <a href="https://www.facebook.com/" class="fa fa-facebook pe-2"></a>
-          <a href="https://www.instagram.com/" class="fa fa-instagram pe-2"></a>
-          <a href="https://www.twitter.com/" class="fa fa-twitter pe-2"></a>
-          <a href="https://www.youtube.com/" class="fa fa-youtube pe-2"></a>
+        <a href="https://www.facebook.com/" class="fa fa-facebook pe-2" target="_blank"></a>
+          <a href="https://www.instagram.com/" class="fa fa-instagram pe-2" target="_blank"></a>
+          <a href="https://www.twitter.com/" class="fa fa-twitter pe-2" target="_blank"></a>
+          <a href="https://www.youtube.com/" class="fa fa-youtube pe-2" target="_blank"></a>
           <br>
           <br>
           <a href="#" class="text-white me-3">Privacy Policy</a>

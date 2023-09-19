@@ -92,6 +92,11 @@
                 if (isset($_SESSION['isLoggedin'])){
                 ?>
                 <ul class="navbar-nav">
+                <li class="nav-item">
+                        <a class="nav-link text-light">
+                          Welcome <strong><?php echo $_SESSION['user-username'];?></strong>
+                        </a>
+                    </li>
                     <li class="nav-item">
                         <a class="nav-link text-light" href='<?php echo $config['URL']?>/cart/'>
                             <i class="fas fa-shopping-cart"></i>
@@ -133,7 +138,7 @@
         <div class="row">
             <div class="col-md-6 ">
                 <div class="ratio addHover ratio-4x3">
-                    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d12345.6789!2d-71.0600!3d42.3601!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMzLCsDE5JzM1LjkiTiA3McKwMjEnMjQuMCJF!5e0!3m2!1sen!2sus!4v1628777041234!5m2!1sen!2sus" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+                    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d7241.851049452093!2d67.03347706701418!3d24.832220398310515!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3eb33dc90e075d63%3A0xc5be26a200669971!2sBlock%208%20Clifton%2C%20Karachi%2C%20Karachi%20City%2C%20Sindh%2075600%2C%20Pakistan!5e0!3m2!1sen!2sus!4v1695146733579!5m2!1sen!2sus" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
                 </div>
             </div>
             <div class="col-md-6 mt-5">
@@ -141,11 +146,13 @@
                     <div class="row">
                         <div class="col">
                             <p class="fw-bold">Email:</p>
-                            <p class="fw-normal">plantnest@gmail.com</p>
-                            <p class="fw-bold">Type:</p>
-                            <p class="fw-normal">Random Address on Random Block in Random city, Random Country</p>
+                            <a href="mailto:mr.tgamer247797704@gmail.com">Email: mr.tgamer247797704@gmail.com</a>
+                            <br>
+                            <br>
+                            <p class="fw-bold">Address:</p>
+                            <p class="fw-normal">Clifton Block 8,Karachi, Pakistan</p>
                             <p class="fw-bold">Number:</p>
-                            <p class="fw-normal">0000 0000000</p>
+                            <p class="fw-normal">+923082838448</p>
                         </div>
                     </div>
                 </div>
@@ -180,15 +187,17 @@
         </div>
         <div class="col pt-5">
             <h5>Contact Us</h5>
-            <p>Email: plantnest@gmail.com</p>
-            <p>Phone: 0000-0000000</p>
-            <p>Address: Clifton,Karachi, Pakistan</p>
+            <a href="mailto:mr.tgamer247797704@gmail.com">Email: mr.tgamer247797704@gmail.com</a>
+            <br>
+            <br>
+            <p>Phone: +923082838448</p>
+            <p>Address: Clifton Block 8,Karachi, Pakistan</p>
         </div>
        <div class="col pt-5">
-        <a href="https://www.facebook.com/" class="fa fa-facebook pe-2"></a>
-          <a href="https://www.instagram.com/" class="fa fa-instagram pe-2"></a>
-          <a href="https://www.twitter.com/" class="fa fa-twitter pe-2"></a>
-          <a href="https://www.youtube.com/" class="fa fa-youtube pe-2"></a>
+        <a href="https://www.facebook.com/" class="fa fa-facebook pe-2" target="_blank"></a>
+          <a href="https://www.instagram.com/" class="fa fa-instagram pe-2" target="_blank"></a>
+          <a href="https://www.twitter.com/" class="fa fa-twitter pe-2" target="_blank"></a>
+          <a href="https://www.youtube.com/" class="fa fa-youtube pe-2" target="_blank"></a>
           <br>
           <br>
           <a href="#" class="text-white me-3">Privacy Policy</a>
