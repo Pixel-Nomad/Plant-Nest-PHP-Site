@@ -3,88 +3,93 @@
     session_start();
     $connection = mysqli_connect($config['DB_URL'],$config['DB_USERNAME'],$config['DB_PASSWORD'],$config['DB_DATABASE']);
     if (isset($_SESSION['isLoggedin'])){
-        if ($_SESSION['user-role'] != 'user') {
-            if (isset($_POST['submit']) && isset($_POST['plant_id'])){
-                $id = $_POST['plant_id'];
-                $sql = "DELETE FROM `plants` WHERE `plant_id` = '$id'";
-                $result = mysqli_query($connection,$sql);
-                if ($result) {
-                    header('location: '. $config['URL'].'/admin/management/product');
-                    exit(); 
-                }
-            }
-            if (isset($_POST['submit2']) && isset($_POST['plantid'])){
-                $oldid = $_POST['old-plantid'];
-                $plantid = $_POST['plantid'];
-                $plantname = $_POST['plantname'];
-                $plantdescription = $_POST['plantdescription'];
-                $plantprice = $_POST['plantprice'];
-                $plantquantity = $_POST['plantquantity'];
-                $plantimage = $_POST['plantimage'];
-                $plantfeatured = $_POST['plantfeatured'];
-                $plantcategory = $_POST['plantcategory'];
-                $sql = "UPDATE `plants` SET 
-                `plant_id` = $plantid, 
-                `name` = '$plantname', 
-                `description` = \"$plantdescription\", 
-                `price` = '$plantprice', 
-                `quantity` = '$plantquantity', 
-                `image` = '$plantimage', 
-                `featured` = '$plantfeatured', 
-                `category_id` = '$plantcategory' WHERE `plant_id` = $oldid";
-                $result = mysqli_query($connection,$sql);
-                $sql2 = "UPDATE `cart` SET `plant_id` = $plantid WHERE `plant_id` = $oldid";
-                $sql3 = "UPDATE `order_items` SET `plant_id` = $plantid WHERE `plant_id` = $oldid";
-                $sql4 = "UPDATE `reviews` SET `plant_id` = $plantid WHERE `plant_id` = $oldid";
-                $result2 = mysqli_query($connection,$sql2);
-                $result3 = mysqli_query($connection,$sql3);
-                $result4 = mysqli_query($connection,$sql4);
-                if ($result) {
-                    header('location: '. $config['URL'].'/admin/management/product');
-                    exit(); 
-                }
-            }
-            if (isset($_POST['submit3']) && isset($_POST['new-id']) && isset($_POST['new-name'])){
-                $id = $_POST['new-id'];
-                $name = $_POST['new-name'];
-                $description = $_POST['new-description'];
-                $price = $_POST['new-price'];
-                $quantity = $_POST['new-quantity'];
-                $image = $_POST['new-image'];
-                $category = $_POST['new-category'];
-                if ($id >= 1) {
-                    $sql = "SELECT * FROM `palnts` WHERE plant_id = $id";
-                    $result = mysqli_query($connection,$sql);
-                    $total  = mysqli_num_rows($result);
-                    if ($total >= 1) {
-                        $sql2 = "INSERT INTO `plants` (`name`,`description`,`price`,`quantity`,`image`,`category_id`) 
-                        VALUES ('$name',\"$description\",$price,$quantity,'$image','$category')";
-                        $result2 = mysqli_query($connection,$sql2);
-                        if ($result2) {
-                            header('location: '. $config['URL'].'/admin/management/category');
-                            exit(); 
-                        }
-                    } else {
-                        $sql2 = "INSERT INTO `plants` (`plant_id`,`name`,`description`,`price`,`quantity`,`image`,`category_id`) 
-                        VALUES ($id,'$name',\"$description\",$price,$quantity,'$image','$category')";
-                        $result2 = mysqli_query($connection,$sql2);
-                        if ($result2) {
-                            header('location: '. $config['URL'].'/admin/management/category');
-                            exit(); 
-                        }
-                    }
-                } else {
-                    $sql = "INSERT INTO `plants` (`name`,`description`,`price`,`quantity`,`image`,`category_id`) 
-                    VALUES ('$name',\"$description\",$price,$quantity,'$image','$category')";
+        if ($_SESSION['isVerified']) {
+            if ($_SESSION['user-role'] != 'user') {
+                if (isset($_POST['submit']) && isset($_POST['plant_id'])){
+                    $id = $_POST['plant_id'];
+                    $sql = "DELETE FROM `plants` WHERE `plant_id` = '$id'";
                     $result = mysqli_query($connection,$sql);
                     if ($result) {
-                        // header('location: '. $config['URL'].'/admin/management/category');
-                        // exit(); 
+                        header('location: '. $config['URL'].'/admin/management/product');
+                        exit(); 
                     }
                 }
+                if (isset($_POST['submit2']) && isset($_POST['plantid'])){
+                    $oldid = $_POST['old-plantid'];
+                    $plantid = $_POST['plantid'];
+                    $plantname = $_POST['plantname'];
+                    $plantdescription = $_POST['plantdescription'];
+                    $plantprice = $_POST['plantprice'];
+                    $plantquantity = $_POST['plantquantity'];
+                    $plantimage = $_POST['plantimage'];
+                    $plantfeatured = $_POST['plantfeatured'];
+                    $plantcategory = $_POST['plantcategory'];
+                    $sql = "UPDATE `plants` SET 
+                    `plant_id` = $plantid, 
+                    `name` = '$plantname', 
+                    `description` = \"$plantdescription\", 
+                    `price` = '$plantprice', 
+                    `quantity` = '$plantquantity', 
+                    `image` = '$plantimage', 
+                    `featured` = '$plantfeatured', 
+                    `category_id` = '$plantcategory' WHERE `plant_id` = $oldid";
+                    $result = mysqli_query($connection,$sql);
+                    $sql2 = "UPDATE `cart` SET `plant_id` = $plantid WHERE `plant_id` = $oldid";
+                    $sql3 = "UPDATE `order_items` SET `plant_id` = $plantid WHERE `plant_id` = $oldid";
+                    $sql4 = "UPDATE `reviews` SET `plant_id` = $plantid WHERE `plant_id` = $oldid";
+                    $result2 = mysqli_query($connection,$sql2);
+                    $result3 = mysqli_query($connection,$sql3);
+                    $result4 = mysqli_query($connection,$sql4);
+                    if ($result) {
+                        header('location: '. $config['URL'].'/admin/management/product');
+                        exit(); 
+                    }
+                }
+                if (isset($_POST['submit3']) && isset($_POST['new-id']) && isset($_POST['new-name'])){
+                    $id = $_POST['new-id'];
+                    $name = $_POST['new-name'];
+                    $description = $_POST['new-description'];
+                    $price = $_POST['new-price'];
+                    $quantity = $_POST['new-quantity'];
+                    $image = $_POST['new-image'];
+                    $category = $_POST['new-category'];
+                    if ($id >= 1) {
+                        $sql = "SELECT * FROM `palnts` WHERE plant_id = $id";
+                        $result = mysqli_query($connection,$sql);
+                        $total  = mysqli_num_rows($result);
+                        if ($total >= 1) {
+                            $sql2 = "INSERT INTO `plants` (`name`,`description`,`price`,`quantity`,`image`,`category_id`) 
+                            VALUES ('$name',\"$description\",$price,$quantity,'$image','$category')";
+                            $result2 = mysqli_query($connection,$sql2);
+                            if ($result2) {
+                                header('location: '. $config['URL'].'/admin/management/category');
+                                exit(); 
+                            }
+                        } else {
+                            $sql2 = "INSERT INTO `plants` (`plant_id`,`name`,`description`,`price`,`quantity`,`image`,`category_id`) 
+                            VALUES ($id,'$name',\"$description\",$price,$quantity,'$image','$category')";
+                            $result2 = mysqli_query($connection,$sql2);
+                            if ($result2) {
+                                header('location: '. $config['URL'].'/admin/management/category');
+                                exit(); 
+                            }
+                        }
+                    } else {
+                        $sql = "INSERT INTO `plants` (`name`,`description`,`price`,`quantity`,`image`,`category_id`) 
+                        VALUES ('$name',\"$description\",$price,$quantity,'$image','$category')";
+                        $result = mysqli_query($connection,$sql);
+                        if ($result) {
+                            // header('location: '. $config['URL'].'/admin/management/category');
+                            // exit(); 
+                        }
+                    }
+                }
+            } else {
+                header('location: '. $config['URL'].'/user/login');
+                exit(); 
             }
         } else {
-            header('location: '. $config['URL'].'/user/login');
+            header('location: '. $config['URL'].'/user/verify');
             exit(); 
         }
     } else {

@@ -14,78 +14,83 @@ function generateRandomString($length = 10)
     return $randomString;
 }
 if (isset($_SESSION['isLoggedin'])) {
-    if (isset($_POST['submit']) && isset($_POST['cart_id'])) {
-        $cart_id = $_POST['cart_id'];
-        $user_id = $_SESSION['user-id'];
-        $quantity = $_POST['quantity'];
-        if ($quantity >= 1) {
-            $sql = "UPDATE `cart` SET `Quantity` ='$quantity' WHERE cart_id = $cart_id";
-            $result = mysqli_query($connection, $sql);
-            if ($result) {
-                header('location: ' . $config['URL'] . '/cart');
-                exit();
-            }
-        } else {
-            $sql = "DELETE FROM `cart` WHERE cart_id = $cart_id";
-            $result = mysqli_query($connection, $sql);
-            if ($result) {
-                header('location: ' . $config['URL'] . '/cart');
-                exit();
-            }
-        }
-    }
-    if (isset($_POST['checkoutBtn-yes'])) {
-        unset($_POST['checkoutBtn-yes']);
-        unset($_POST['checkoutBtn']);
-        $user_id = $_SESSION['user-id'];
-        $sql     = "SELECT * FROM `cart` WHERE `user_id` = $user_id";
-        $result = mysqli_query($connection, $sql);
-        $total  = mysqli_num_rows($result);
-        if ($total >= 1) {
-            GenerateSecret:
-            $randomString = generateRandomString(10);
-            $sql2     = "SELECT * FROM `order_items` WHERE `order_secret` = '$randomString'";
-            $result2 = mysqli_query($connection, $sql2);
-            $total2  = mysqli_num_rows($result2);
-            if ($total2 >= 1) {
-                goto GenerateSecret;
+    if ($_SESSION['isVerified']) {
+        if (isset($_POST['submit']) && isset($_POST['cart_id'])) {
+            $cart_id = $_POST['cart_id'];
+            $user_id = $_SESSION['user-id'];
+            $quantity = $_POST['quantity'];
+            if ($quantity >= 1) {
+                $sql = "UPDATE `cart` SET `Quantity` ='$quantity' WHERE cart_id = $cart_id";
+                $result = mysqli_query($connection, $sql);
+                if ($result) {
+                    header('location: ' . $config['URL'] . '/cart');
+                    exit();
+                }
             } else {
-                $sql3 = "INSERT INTO `order_items` (`order_secret`,`plant_id`,`quantity`) VALUES";
-                $first = true;
-                while ($row = mysqli_fetch_assoc($result)) {
-                    $plant_id = $row['plant_id'];
-                    $quantity = $row['Quantity'];
-                    if ($first) {
-                        $first = false;
-                        $sql3 .= "('$randomString',$plant_id,$quantity)";
-                    } else {
-                        $sql3 .= ", ('$randomString',$plant_id,$quantity)";
-                    }
-                    $sql4 = "DELETE FROM `cart` WHERE `plant_id` = $plant_id AND `user_id` = $user_id";
-                    $sql5 = "UPDATE `plants` SET quantity = quantity - $quantity WHERE `plant_id` = $plant_id";
-                    mysqli_query($connection, $sql4);
-                    mysqli_query($connection, $sql5);
+                $sql = "DELETE FROM `cart` WHERE cart_id = $cart_id";
+                $result = mysqli_query($connection, $sql);
+                if ($result) {
+                    header('location: ' . $config['URL'] . '/cart');
+                    exit();
                 }
-                $result3 = mysqli_query($connection, $sql3);
-                if ($result3) {
-                    $total_amount = $_POST['total_amount'];
-                    $total_price = $_POST['total_price'];
-                    $total_price = ($total_price * 0.18) + $total_price;
-                    $sql6 = "INSERT INTO `orders` (`user_id`,`order_secret`,`Total_Amount`,`Total_Price`)
-                        VALUES ($user_id,'$randomString',$total_amount,$total_price)";
-                    $result4 = mysqli_query($connection, $sql6);
-                    if ($result4) {
-                        header('location: ' . $config['URL'] . '/thanks.php');
-                        exit();
+            }
+        }
+        if (isset($_POST['checkoutBtn-yes'])) {
+            unset($_POST['checkoutBtn-yes']);
+            unset($_POST['checkoutBtn']);
+            $user_id = $_SESSION['user-id'];
+            $sql     = "SELECT * FROM `cart` WHERE `user_id` = $user_id";
+            $result = mysqli_query($connection, $sql);
+            $total  = mysqli_num_rows($result);
+            if ($total >= 1) {
+                GenerateSecret:
+                $randomString = generateRandomString(10);
+                $sql2     = "SELECT * FROM `order_items` WHERE `order_secret` = '$randomString'";
+                $result2 = mysqli_query($connection, $sql2);
+                $total2  = mysqli_num_rows($result2);
+                if ($total2 >= 1) {
+                    goto GenerateSecret;
+                } else {
+                    $sql3 = "INSERT INTO `order_items` (`order_secret`,`plant_id`,`quantity`) VALUES";
+                    $first = true;
+                    while ($row = mysqli_fetch_assoc($result)) {
+                        $plant_id = $row['plant_id'];
+                        $quantity = $row['Quantity'];
+                        if ($first) {
+                            $first = false;
+                            $sql3 .= "('$randomString',$plant_id,$quantity)";
+                        } else {
+                            $sql3 .= ", ('$randomString',$plant_id,$quantity)";
+                        }
+                        $sql4 = "DELETE FROM `cart` WHERE `plant_id` = $plant_id AND `user_id` = $user_id";
+                        $sql5 = "UPDATE `plants` SET quantity = quantity - $quantity WHERE `plant_id` = $plant_id";
+                        mysqli_query($connection, $sql4);
+                        mysqli_query($connection, $sql5);
+                    }
+                    $result3 = mysqli_query($connection, $sql3);
+                    if ($result3) {
+                        $total_amount = $_POST['total_amount'];
+                        $total_price = $_POST['total_price'];
+                        $total_price = ($total_price * 0.18) + $total_price;
+                        $sql6 = "INSERT INTO `orders` (`user_id`,`order_secret`,`Total_Amount`,`Total_Price`)
+                            VALUES ($user_id,'$randomString',$total_amount,$total_price)";
+                        $result4 = mysqli_query($connection, $sql6);
+                        if ($result4) {
+                            header('location: ' . $config['URL'] . '/thanks.php');
+                            exit();
+                        }
                     }
                 }
             }
         }
-    }
-    if (isset($_POST['checkoutBtn-no'])) {
-        unset($_POST['checkoutBtn-no']);
-        unset($_POST['checkoutBtn']);
-        header('location: ' . $config['URL'] . '/cart');
+        if (isset($_POST['checkoutBtn-no'])) {
+            unset($_POST['checkoutBtn-no']);
+            unset($_POST['checkoutBtn']);
+            header('location: ' . $config['URL'] . '/cart');
+            exit();
+        }
+    } else {
+        header('location: ' . $config['URL'] . '/user/verify');
         exit();
     }
 } else {

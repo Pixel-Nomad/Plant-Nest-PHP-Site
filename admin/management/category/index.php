@@ -3,64 +3,69 @@
     session_start();
     $connection = mysqli_connect($config['DB_URL'],$config['DB_USERNAME'],$config['DB_PASSWORD'],$config['DB_DATABASE']);
     if (isset($_SESSION['isLoggedin'])){
-        if ($_SESSION['user-role'] != 'user') {
-            if (isset($_POST['submit']) && isset($_POST['category_id'])){
-                $id = $_POST['category_id'];
-                $sql = "DELETE FROM `category` WHERE `category_id` = '$id'";
-                $result = mysqli_query($connection,$sql);
-                if ($result) {
-                    header('location: '. $config['URL'].'/admin/management/category');
-                    exit(); 
-                }
-            }
-            if (isset($_POST['submit2']) && isset($_POST['categoryid'])){
-                $oldid = $_POST['old-categoryid'];
-                $id = $_POST['categoryid'];
-                $name = $_POST['categoryname'];
-                echo $id;
-                echo $name;
-                $sql = "UPDATE `category` SET `category_id` = $id, `Name` = '$name' WHERE `category_id` = $oldid";
-                $sql2 = "UPDATE `plants` SET `category_id` = '$id' WHERE `category_id` = '$oldid'";
-                $result = mysqli_query($connection,$sql);
-                $result2 = mysqli_query($connection,$sql2);
-                if ($result) {
-                    header('location: '. $config['URL'].'/admin/management/category');
-                    exit(); 
-                }
-            }
-            if (isset($_POST['submit3']) && isset($_POST['new-id']) && isset($_POST['new-name'])){
-                $id = $_POST['new-id'];
-                $name = $_POST['new-name'];
-                if ($id >= 1) {
-                    $sql = "SELECT * FROM `category` WHERE category_id = $id";
-                    $result = mysqli_query($connection,$sql);
-                    $total  = mysqli_num_rows($result);
-                    if ($total >= 1) {
-                        $sql2 = "INSERT INTO `category` (`Name`) VALUES ('$name')";
-                        $result2 = mysqli_query($connection,$sql2);
-                        if ($result2) {
-                            header('location: '. $config['URL'].'/admin/management/category');
-                            exit(); 
-                        }
-                    } else {
-                        $sql2 = "INSERT INTO `category` (`category_id`,`Name`) VALUES ($id,'$name')";
-                        $result2 = mysqli_query($connection,$sql2);
-                        if ($result2) {
-                            header('location: '. $config['URL'].'/admin/management/category');
-                            exit(); 
-                        }
-                    }
-                } else {
-                    $sql = "INSERT INTO `category` (`Name`) VALUES ('$name')";
+        if ($_SESSION['isVerified']) {
+            if ($_SESSION['user-role'] != 'user') {
+                if (isset($_POST['submit']) && isset($_POST['category_id'])){
+                    $id = $_POST['category_id'];
+                    $sql = "DELETE FROM `category` WHERE `category_id` = '$id'";
                     $result = mysqli_query($connection,$sql);
                     if ($result) {
                         header('location: '. $config['URL'].'/admin/management/category');
                         exit(); 
                     }
                 }
+                if (isset($_POST['submit2']) && isset($_POST['categoryid'])){
+                    $oldid = $_POST['old-categoryid'];
+                    $id = $_POST['categoryid'];
+                    $name = $_POST['categoryname'];
+                    echo $id;
+                    echo $name;
+                    $sql = "UPDATE `category` SET `category_id` = $id, `Name` = '$name' WHERE `category_id` = $oldid";
+                    $sql2 = "UPDATE `plants` SET `category_id` = '$id' WHERE `category_id` = '$oldid'";
+                    $result = mysqli_query($connection,$sql);
+                    $result2 = mysqli_query($connection,$sql2);
+                    if ($result) {
+                        header('location: '. $config['URL'].'/admin/management/category');
+                        exit(); 
+                    }
+                }
+                if (isset($_POST['submit3']) && isset($_POST['new-id']) && isset($_POST['new-name'])){
+                    $id = $_POST['new-id'];
+                    $name = $_POST['new-name'];
+                    if ($id >= 1) {
+                        $sql = "SELECT * FROM `category` WHERE category_id = $id";
+                        $result = mysqli_query($connection,$sql);
+                        $total  = mysqli_num_rows($result);
+                        if ($total >= 1) {
+                            $sql2 = "INSERT INTO `category` (`Name`) VALUES ('$name')";
+                            $result2 = mysqli_query($connection,$sql2);
+                            if ($result2) {
+                                header('location: '. $config['URL'].'/admin/management/category');
+                                exit(); 
+                            }
+                        } else {
+                            $sql2 = "INSERT INTO `category` (`category_id`,`Name`) VALUES ($id,'$name')";
+                            $result2 = mysqli_query($connection,$sql2);
+                            if ($result2) {
+                                header('location: '. $config['URL'].'/admin/management/category');
+                                exit(); 
+                            }
+                        }
+                    } else {
+                        $sql = "INSERT INTO `category` (`Name`) VALUES ('$name')";
+                        $result = mysqli_query($connection,$sql);
+                        if ($result) {
+                            header('location: '. $config['URL'].'/admin/management/category');
+                            exit(); 
+                        }
+                    }
+                }
+            } else {
+                header('location: '. $config['URL'].'/user/login');
+                exit(); 
             }
         } else {
-            header('location: '. $config['URL'].'/user/login');
+            header('location: '. $config['URL'].'/user/verify');
             exit(); 
         }
     } else {

@@ -3,77 +3,82 @@
     session_start();
     $connection = mysqli_connect($config['DB_URL'],$config['DB_USERNAME'],$config['DB_PASSWORD'],$config['DB_DATABASE']);
     if (isset($_SESSION['isLoggedin'])){
-        if ($_SESSION['user-role'] != 'user') {
-            if (isset($_POST['submit']) && isset($_POST['id'])){
-                $id = $_POST['id'];
-                $sql = "DELETE FROM `sliders` WHERE `id` = $id";
-                $result = mysqli_query($connection,$sql);
-                if ($result) {
-                    header('location: '. $config['URL'].'/admin/management/sliders');
-                    exit(); 
-                }
-            }
-            if (isset($_POST['submit2']) && isset($_POST['sliderid'])){
-                $oldid = $_POST['old-sliderid'];
-                $id = $_POST['sliderid'];
-                $sliderimage = $_POST['sliderimage'];
-                $slidertext = $_POST['slidertext'];
-                $sliderdescription = $_POST['sliderdescription'];
-                $sliderdark = $_POST['sliderdark'];
-                if ($sliderdark != 'yes' && $sliderdark != 'no') {
-                    $sliderdark = 'no';
-                }
-                
-                $sql = "UPDATE `sliders` SET `id` = $id, `image` = '$sliderimage', 
-                `text` = '$slidertext', `description` = '$sliderdescription' , `dark` = '$sliderdark' WHERE `id` = $oldid";
-                $result = mysqli_query($connection,$sql);
-                if ($result) {
-                    header('location: '. $config['URL'].'/admin/management/sliders');
-                    exit(); 
-                }
-            }
-            if (isset($_POST['submit3']) && isset($_POST['new-id']) && isset($_POST['new-image'])){
-                $id = $_POST['new-id'];
-                $image = $_POST['new-image'];
-                $text = $_POST['new-text'];
-                $description = $_POST['new-description'];
-                $dark = $_POST['new-dark'];
-                if ($dark != 'yes' && $dark != 'no') {
-                    $dark = 'no';
-                }
-                if ($id >= 1) {
-                    $sql = "SELECT * FROM `sliders` WHERE id = $id";
-                    $result = mysqli_query($connection,$sql);
-                    $total  = mysqli_num_rows($result);
-                    if ($total >= 1) {
-                        $sql2 = "INSERT INTO `sliders` (`image`,`text`,`description`,`dark`) 
-                        VALUES ('$image','$text','$description','$dark')";
-                        $result2 = mysqli_query($connection,$sql2);
-                        if ($result2) {
-                            header('location: '. $config['URL'].'/admin/management/sliders');
-                            exit(); 
-                        }
-                    } else {
-                        $sql2 = "INSERT INTO `sliders` (`id`,`image`,`text`,`description`,`dark`) 
-                        VALUES ('$id','$image','$text','$description','$dark')";
-                        $result2 = mysqli_query($connection,$sql2);
-                        if ($result2) {
-                            header('location: '. $config['URL'].'/admin/management/sliders');
-                            exit(); 
-                        }
-                    }
-                } else {
-                    $sql = "INSERT INTO `sliders` (`image`,`text`,`description`,`dark`) 
-                    VALUES ('$image','$text','$description','$dark')";
+        if ($_SESSION['isVerified']) {
+            if ($_SESSION['user-role'] != 'user') {
+                if (isset($_POST['submit']) && isset($_POST['id'])){
+                    $id = $_POST['id'];
+                    $sql = "DELETE FROM `sliders` WHERE `id` = $id";
                     $result = mysqli_query($connection,$sql);
                     if ($result) {
                         header('location: '. $config['URL'].'/admin/management/sliders');
                         exit(); 
                     }
                 }
+                if (isset($_POST['submit2']) && isset($_POST['sliderid'])){
+                    $oldid = $_POST['old-sliderid'];
+                    $id = $_POST['sliderid'];
+                    $sliderimage = $_POST['sliderimage'];
+                    $slidertext = $_POST['slidertext'];
+                    $sliderdescription = $_POST['sliderdescription'];
+                    $sliderdark = $_POST['sliderdark'];
+                    if ($sliderdark != 'yes' && $sliderdark != 'no') {
+                        $sliderdark = 'no';
+                    }
+                    
+                    $sql = "UPDATE `sliders` SET `id` = $id, `image` = '$sliderimage', 
+                    `text` = '$slidertext', `description` = '$sliderdescription' , `dark` = '$sliderdark' WHERE `id` = $oldid";
+                    $result = mysqli_query($connection,$sql);
+                    if ($result) {
+                        header('location: '. $config['URL'].'/admin/management/sliders');
+                        exit(); 
+                    }
+                }
+                if (isset($_POST['submit3']) && isset($_POST['new-id']) && isset($_POST['new-image'])){
+                    $id = $_POST['new-id'];
+                    $image = $_POST['new-image'];
+                    $text = $_POST['new-text'];
+                    $description = $_POST['new-description'];
+                    $dark = $_POST['new-dark'];
+                    if ($dark != 'yes' && $dark != 'no') {
+                        $dark = 'no';
+                    }
+                    if ($id >= 1) {
+                        $sql = "SELECT * FROM `sliders` WHERE id = $id";
+                        $result = mysqli_query($connection,$sql);
+                        $total  = mysqli_num_rows($result);
+                        if ($total >= 1) {
+                            $sql2 = "INSERT INTO `sliders` (`image`,`text`,`description`,`dark`) 
+                            VALUES ('$image','$text','$description','$dark')";
+                            $result2 = mysqli_query($connection,$sql2);
+                            if ($result2) {
+                                header('location: '. $config['URL'].'/admin/management/sliders');
+                                exit(); 
+                            }
+                        } else {
+                            $sql2 = "INSERT INTO `sliders` (`id`,`image`,`text`,`description`,`dark`) 
+                            VALUES ('$id','$image','$text','$description','$dark')";
+                            $result2 = mysqli_query($connection,$sql2);
+                            if ($result2) {
+                                header('location: '. $config['URL'].'/admin/management/sliders');
+                                exit(); 
+                            }
+                        }
+                    } else {
+                        $sql = "INSERT INTO `sliders` (`image`,`text`,`description`,`dark`) 
+                        VALUES ('$image','$text','$description','$dark')";
+                        $result = mysqli_query($connection,$sql);
+                        if ($result) {
+                            header('location: '. $config['URL'].'/admin/management/sliders');
+                            exit(); 
+                        }
+                    }
+                }
+            } else {
+                header('location: '. $config['URL'].'/user/login');
+                exit(); 
             }
         } else {
-            header('location: '. $config['URL'].'/user/login');
+            header('location: '. $config['URL'].'/user/verify');
             exit(); 
         }
     } else {

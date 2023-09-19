@@ -10,22 +10,27 @@ function isWhitespaceString($str)
 }
 if (isset($_POST['submit']) && isset($_POST['plant_id'])) {
     if (isset($_SESSION['isLoggedin'])) {
-        $user_id = $_SESSION['user-id'];
-        $plant_id = $_POST['plant_id'];
-        $sql = "SELECT * FROM `cart` WHERE `user_id` = $user_id AND `plant_id` = $plant_id";
-        $result = mysqli_query($connection, $sql);
-        $total  = mysqli_num_rows($result);
-        if ($total == 1) {
-            header('location: ' . $config['URL'] . '/cart');
-            exit();
-        } else {
-            $sql2 = "INSERT INTO `cart` (`user_id`, `plant_id`, `Quantity`) 
-                VALUES ($user_id, $plant_id, 1)";
-            $result2 = mysqli_query($connection, $sql2);
-            if ($result2) {
+        if ($_SESSION['isVerified']) {
+            $user_id = $_SESSION['user-id'];
+            $plant_id = $_POST['plant_id'];
+            $sql = "SELECT * FROM `cart` WHERE `user_id` = $user_id AND `plant_id` = $plant_id";
+            $result = mysqli_query($connection, $sql);
+            $total  = mysqli_num_rows($result);
+            if ($total == 1) {
                 header('location: ' . $config['URL'] . '/cart');
                 exit();
+            } else {
+                $sql2 = "INSERT INTO `cart` (`user_id`, `plant_id`, `Quantity`) 
+                    VALUES ($user_id, $plant_id, 1)";
+                $result2 = mysqli_query($connection, $sql2);
+                if ($result2) {
+                    header('location: ' . $config['URL'] . '/cart');
+                    exit();
+                }
             }
+        } else {
+            header('location: ' . $config['URL'] . '/user/verify');
+            exit();
         }
     } else {
         header('location: ' . $config['URL'] . '/user/login');
@@ -162,10 +167,12 @@ if (isset($_POST['submit3']) && isset($_POST['search-type'])) {
                     <li class="nav-item">
                         <?php
                         if (isset($_SESSION['isLoggedin'])) {
-                            if ($_SESSION['user-role'] != 'user') {
+                            if ($_SESSION['isVerified']) {
+                                if ($_SESSION['user-role'] != 'user') {
                         ?>
                                 <a class="nav-link text-light" href='<?php echo $config['URL'] ?>/admin'>Admin Login</a>
                         <?php
+                                }
                             }
                         }
                         ?>
@@ -180,6 +187,15 @@ if (isset($_POST['submit3']) && isset($_POST['search-type'])) {
                                 Welcome <strong><?php echo $_SESSION['user-username']; ?></strong>
                             </a>
                         </li>
+                        <?php
+                            if (!$_SESSION['isVerified']){
+                        ?>
+                            <li class="nav-item">
+                                <a class="nav-link text-warning" href="<?php echo $config['URL'] ?>/user/verify">Verify</a>
+                            </li>
+                        <?php
+                            }
+                        ?>
                         <li class="nav-item">
                             <a class="nav-link text-light" href='<?php echo $config['URL'] ?>/cart/'>
                                 <i class="fas fa-shopping-cart"></i>
@@ -304,11 +320,13 @@ if (isset($_POST['submit3']) && isset($_POST['search-type'])) {
                         echo '<h3 class="text-center">SOLD OUT</h3>';
                     }
                     if (isset($_SESSION['isLoggedin'])) {
-                        echo ' 
-                                            <div class="d-grid gap-2">
-                                                <a href="' . $config['URL'] . '/user/register."></a>
-                                                <button class="btn btn-primary open-review-form"  data-plant-id="' . $row['plant_id'] . '">Submit Review</button>
-                                            </div>';
+                        if ($_SESSION['isVerified']) {
+                            echo ' 
+                            <div class="d-grid gap-2">
+                                <a href="' . $config['URL'] . '/user/register."></a>
+                                <button class="btn btn-primary open-review-form"  data-plant-id="' . $row['plant_id'] . '">Submit Review</button>
+                            </div>';
+                        }
                     }
                     echo '</div>
                                 </div>
@@ -345,6 +363,7 @@ if (isset($_POST['submit3']) && isset($_POST['search-type'])) {
     </div>
     <?php
     if (isset($_SESSION['isLoggedin'])) {
+        if ($_SESSION['isVerified']) {
     ?>
         <div class="review-form-overlay" id="reviewFormOverlay">
             <div class="review-form">
@@ -372,6 +391,7 @@ if (isset($_POST['submit3']) && isset($_POST['search-type'])) {
             </div>
         </div>
     <?php
+        }
     }
     ?>
 

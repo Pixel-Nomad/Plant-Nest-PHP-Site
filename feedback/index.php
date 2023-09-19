@@ -3,17 +3,22 @@
     session_start();
     $connection = mysqli_connect($config['DB_URL'],$config['DB_USERNAME'],$config['DB_PASSWORD'],$config['DB_DATABASE']);
     if (isset($_SESSION['isLoggedin'])){
-        if (isset($_POST['submit']) && isset($_POST['feedback-message'])) {
-            $user_id = $_SESSION['user-id'];
-            $feedback_satisfaction = $_POST['feedback-satisfaction'];
-            $feedback_message = $_POST['feedback-message'];
-            $sql = "INSERT INTO `feedbacks` (`user_id`, `satisfaction`, `message`) 
-            VALUES ($user_id, '$feedback_satisfaction','$feedback_message')";
-            $result = mysqli_query($connection,$sql);
-            if ($result) {
-                header('location: '. $config['URL'].'/feedback/thanks.php');
-                exit();
+        if ($_SESSION['isVerified']) {
+            if (isset($_POST['submit']) && isset($_POST['feedback-message'])) {
+                $user_id = $_SESSION['user-id'];
+                $feedback_satisfaction = $_POST['feedback-satisfaction'];
+                $feedback_message = $_POST['feedback-message'];
+                $sql = "INSERT INTO `feedbacks` (`user_id`, `satisfaction`, `message`) 
+                VALUES ($user_id, '$feedback_satisfaction','$feedback_message')";
+                $result = mysqli_query($connection,$sql);
+                if ($result) {
+                    header('location: '. $config['URL'].'/feedback/thanks.php');
+                    exit();
+                }
             }
+        } else {
+                header('location: '. $config['URL'].'/user/verify');
+                exit();
         }
     } else {
         if(isset($_SERVER['HTTP_REFERER'])) {

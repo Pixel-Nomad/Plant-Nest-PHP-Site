@@ -33,16 +33,16 @@
                     goto  SkipChecks;
                 }
                 GenerateCode:
-                $randomNumber = mt_rand(10000000, 99999999);
+                $randomNumber = mt_rand(100000, 999999);
                 $newrandomNumber = sha1($randomNumber);
-                $sql3 = "SELECT * FROM `codes` WHERE `mail`= '$email' AND `code`= '$newrandomNumber'";
+                $sql3 = "SELECT * FROM `codes` WHERE `mail`= '$email' AND `type`='forget' AND `code`= '$newrandomNumber'";
                 $result2 = mysqli_query($connection,$sql2);
                 $total3  = mysqli_num_rows($result2);
                 if ($total3 == 1) {
                     goto GenerateCode;
                 } else {
-                    $sql4 = "INSERT INTO `codes`( `mail`, `code`) VALUES (
-                        '$email','$newrandomNumber')";
+                    $sql4 = "INSERT INTO `codes`( `mail`, `code`, `type`) VALUES (
+                        '$email','$newrandomNumber','forget')";
                     $query4 = mysqli_query($connection, $sql4);
                     if (!$query4){ 
                         echo "Failed To insert code";
@@ -80,13 +80,13 @@
             $code    = $_POST['code'];
             $code = sha1($code);
             $email   = $_SESSION['forget-email'];
-            $sql = "SELECT * FROM `codes` WHERE `mail`= '$email' AND `code`= '$code'";
+            $sql = "SELECT * FROM `codes` WHERE `mail`= '$email' AND `type`='forget' AND `code`= '$code'";
             $result = mysqli_query($connection,$sql);
             $total  = mysqli_num_rows($result);
             if ($total == 1) {
                 unset($_SESSION['forget-code-check']);
                 $_SESSION['forget-code-confirmed'] = true;
-                $sql2 = "DELETE FROM `codes` WHERE mail = '$email'";
+                $sql2 = "DELETE FROM `codes` WHERE mail = '$email' AND `type`='forget'";
                 $result = mysqli_query($connection,$sql2);
             }
         }

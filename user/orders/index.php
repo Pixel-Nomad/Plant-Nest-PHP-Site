@@ -3,16 +3,22 @@
     session_start();
     $connection = mysqli_connect($config['DB_URL'],$config['DB_USERNAME'],$config['DB_PASSWORD'],$config['DB_DATABASE']);
     if (isset($_SESSION['isLoggedin'])){
-        if (isset($_POST['submit']) && isset($_POST['order_id'])) {
-            $id = $_POST['order_id'];
-            $sql2 = "UPDATE `orders` SET `Status` = 'Cancelled' WHERE `order_id` = $id";
-            $result = mysqli_query($connection,$sql2);
-            
-            if ($result) {
-                header('location: '.$config['URL'].'/user/orders');
-                exit();
+        if ($_SESSION['isVerified']) {
+            if (isset($_POST['submit']) && isset($_POST['order_id'])) {
+                $id = $_POST['order_id'];
+                $sql2 = "UPDATE `orders` SET `Status` = 'Cancelled' WHERE `order_id` = $id";
+                $result = mysqli_query($connection,$sql2);
+                
+                if ($result) {
+                    header('location: '.$config['URL'].'/user/orders');
+                    exit();
+                }
             }
+        } else {
+            header('location: '.$config['URL'].'/user/verify');
+            exit();
         }
+        
     } else {
         if(isset($_SERVER['HTTP_REFERER'])) {
             header('location: '. $_SERVER['HTTP_REFERER']);

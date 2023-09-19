@@ -69,10 +69,12 @@
                     <li class="nav-item">
                         <?php
                             if (isset($_SESSION['isLoggedin'])){
-                                if ($_SESSION['user-role'] != 'user') {
+                                if ($_SESSION['isVerified']) {
+                                    if ($_SESSION['user-role'] != 'user') {
                         ?>
                             <a class="nav-link text-light" href='<?php echo $config['URL']?>/admin'>Admin Login</a>
                         <?php
+                                    }
                                 }
                             } 
                         ?>
@@ -87,6 +89,15 @@
                           Welcome <strong><?php echo $_SESSION['user-username'];?></strong>
                         </a>
                     </li>
+                    <?php
+                        if (!$_SESSION['isVerified']){
+                    ?>
+                        <li class="nav-item">
+                            <a class="nav-link text-warning" href="<?php echo $config['URL'] ?>/user/verify">Verify</a>
+                        </li>
+                    <?php
+                        }
+                    ?>
                     <li class="nav-item">
                         <a class="nav-link text-light" href='<?php echo $config['URL']?>/cart/'>
                             <i class="fas fa-shopping-cart"></i>

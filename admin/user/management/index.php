@@ -3,22 +3,27 @@
     session_start();
     $connection = mysqli_connect($config['DB_URL'],$config['DB_USERNAME'],$config['DB_PASSWORD'],$config['DB_DATABASE']);
     if (isset($_SESSION['isLoggedin'])){
-        if ($_SESSION['user-role'] != 'user') {
-          if (isset($_POST['submit']) && isset($_POST['options'])){
-            $id = $_POST['old-userid'];
-            $role = $_POST['options'];
-            $sql = "UPDATE `users` SET `role` = '$role' WHERE `user_id` = $id";
-            $result = mysqli_query($connection,$sql);
-            if ($result) {
-                if ( $_SESSION['user-role'] == $_POST['old-userid']) {
-                    $_SESSION['user-role'] = $role;
+        if ($_SESSION['isVerified']) {
+            if ($_SESSION['user-role'] != 'user') {
+            if (isset($_POST['submit']) && isset($_POST['options'])){
+                $id = $_POST['old-userid'];
+                $role = $_POST['options'];
+                $sql = "UPDATE `users` SET `role` = '$role' WHERE `user_id` = $id";
+                $result = mysqli_query($connection,$sql);
+                if ($result) {
+                    if ( $_SESSION['user-role'] == $_POST['old-userid']) {
+                        $_SESSION['user-role'] = $role;
+                    }
+                    header('location: '. $config['URL'].'/admin/user/management');
+                    exit(); 
                 }
-                header('location: '. $config['URL'].'/admin/user/management');
+            } 
+            } else {
+                header('location: '. $config['URL'].'/user/login');
                 exit(); 
             }
-        } 
         } else {
-            header('location: '. $config['URL'].'/user/login');
+            header('location: '. $config['URL'].'/user/verify');
             exit(); 
         }
     } else {

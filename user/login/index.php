@@ -29,10 +29,19 @@
                   $_SESSION['user-address'] = $row['address'];
                   $_SESSION['user-country'] = $row['country'];
                   $_SESSION['user-city'] = $row['city'];
+                  if ($row['verified'] == 'true') {
+                    $_SESSION['isVerified'] = true;
+                  } else {
+                    $_SESSION['isVerified'] = false;
+                  }
               }
               $_SESSION['email'] = $email;
               $_SESSION['isLoggedin'] = true;
-              header('location: '.$config['URL']);
+              if ($_SESSION['isVerified']) {
+                header('location: ' . $config['URL']);
+            } else {
+                header('location: ' . $config['URL'] . '/user/verify');
+            }
               exit();
           }
           }

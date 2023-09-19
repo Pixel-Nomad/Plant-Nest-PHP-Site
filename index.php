@@ -4,22 +4,27 @@
     $connection = mysqli_connect($config['DB_URL'],$config['DB_USERNAME'],$config['DB_PASSWORD'],$config['DB_DATABASE']);
     if (isset($_POST['submit']) && isset($_POST['plant_id'])){
         if (isset($_SESSION['isLoggedin'])){
-            $user_id = $_SESSION['user-id'];
-            $plant_id = $_POST['plant_id'];
-            $sql = "SELECT * FROM `cart` WHERE `user_id` = $user_id AND `plant_id` = $plant_id";
-            $result = mysqli_query($connection,$sql);
-            $total  = mysqli_num_rows($result);
-            if ($total == 1) {
-                header('location: '. $config['URL'].'/cart');
-                exit();
-            } else {
-                $sql2 = "INSERT INTO `cart` (`user_id`, `plant_id`, `Quantity`) 
-                VALUES ($user_id, $plant_id, 1)";
-                $result2 = mysqli_query($connection,$sql2);
-                if ($result2) {
+            if ($_SESSION['isVerified']) {
+                $user_id = $_SESSION['user-id'];
+                $plant_id = $_POST['plant_id'];
+                $sql = "SELECT * FROM `cart` WHERE `user_id` = $user_id AND `plant_id` = $plant_id";
+                $result = mysqli_query($connection,$sql);
+                $total  = mysqli_num_rows($result);
+                if ($total == 1) {
                     header('location: '. $config['URL'].'/cart');
                     exit();
+                } else {
+                    $sql2 = "INSERT INTO `cart` (`user_id`, `plant_id`, `Quantity`) 
+                    VALUES ($user_id, $plant_id, 1)";
+                    $result2 = mysqli_query($connection,$sql2);
+                    if ($result2) {
+                        header('location: '. $config['URL'].'/cart');
+                        exit();
+                    }
                 }
+            } else {
+                header('location: '. $config['URL'].'/user/verify');
+                exit();
             }
         } else {
             header('location: '. $config['URL'].'/user/login');
@@ -94,10 +99,12 @@
                     <li class="nav-item">
                         <?php
                             if (isset($_SESSION['isLoggedin'])){
-                                if ($_SESSION['user-role'] != 'user') {
+                                if ($_SESSION['isVerified']){
+                                    if ($_SESSION['user-role'] != 'user') {
                         ?>
                             <a class="nav-link text-light" href='<?php echo $config['URL']?>/admin'>Admin Login</a>
                         <?php
+                                    }
                                 }
                             } 
                         ?>
@@ -112,6 +119,15 @@
                           Welcome <strong><?php echo $_SESSION['user-username'];?></strong>
                         </a>
                     </li>
+                    <?php
+                        if (!$_SESSION['isVerified']){
+                    ?>
+                        <li class="nav-item">
+                            <a class="nav-link text-warning" href="<?php echo $config['URL'] ?>/user/verify">Verify</a>
+                        </li>
+                    <?php
+                        }
+                    ?>
                     <li class="nav-item">
                         <a class="nav-link text-light" href='<?php echo $config['URL']?>/cart/'>
                             <i class="fas fa-shopping-cart"></i>

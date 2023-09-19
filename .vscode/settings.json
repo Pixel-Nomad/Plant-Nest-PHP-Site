@@ -1,0 +1,6 @@
+{
+    "discord.detailsEditing": "{dir_name}\\{file_name}",
+    "discord.swapBigAndSmallImage": false,
+    "discord.removeTimestamp": true,
+    "discord.lowerDetailsEditing": "{workspace_folder} ({current_line}/{total_lines}) ({file_size})",
+}

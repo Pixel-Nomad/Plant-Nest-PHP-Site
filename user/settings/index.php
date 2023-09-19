@@ -4,103 +4,108 @@ session_start();
 $connection = mysqli_connect($config['DB_URL'], $config['DB_USERNAME'], $config['DB_PASSWORD'], $config['DB_DATABASE']);
 $passwordSection = false;
 if (isset($_SESSION['isLoggedin'])) {
-    if (isset($_POST['submit2']) && isset($_POST['password3'])) {
-        $passwordSection = true;
-        $password3    = strval($_POST['password3']);
-        $encrypt3     = sha1($password3);
-        $id = $_SESSION['user-id'];
-        $sql2 = "SELECT * FROM `users` WHERE `user_id`= '$id' AND `password` = '$encrypt3'";
-        $result2 = mysqli_query($connection, $sql2);
-        $total  = mysqli_num_rows($result2);
-        if ($total == 1) {
-            if (strlen($password3) >= 6) {
-                $password    = strval($_POST['password']);
-                if (strlen($password) >= 6) {
-                    $password2   = strval($_POST['password2']);
-                    $encrypt     = sha1($password);
-                    if ($password == $password2) {
-                        $sql = "UPDATE `users` SET `password`='$encrypt' WHERE `user_id` = '$id'";
-                        $result = mysqli_query($connection, $sql);
-                        if ($result) {
-                            session_unset();
-                            session_destroy();
-                            header('location: ' . $config['URL'] . '/user/login');
-                            exit();
-                        }
-                    }
-                }
-            }
-        }
-    }
-    if (isset($_POST['submit3'])) {
-        $id = $_SESSION['user-id'];
-        $sql2 = "DELETE FROM `users` WHERE `user_id` = '$id'";
-        $result = mysqli_query($connection, $sql2);
-        if ($result) {
-            session_unset();
-            session_destroy();
-            header('location: ' . $config['URL'] . '/user/login');
-            exit();
-        }
-    }
-    if (isset($_POST['submit']) && isset($_POST['password'])) {
-        $password    = strval($_POST['password']);
-        $encrypt     = sha1($password);
-        $id = $_SESSION['user-id'];
-        if (strlen($password) >= 6) {
-            $sql2 = "SELECT * FROM `users` WHERE `user_id`= '$id' AND `password` = '$encrypt'";
+    if ($_SESSION['isVerified']){
+        if (isset($_POST['submit2']) && isset($_POST['password3'])) {
+            $passwordSection = true;
+            $password3    = strval($_POST['password3']);
+            $encrypt3     = sha1($password3);
+            $id = $_SESSION['user-id'];
+            $sql2 = "SELECT * FROM `users` WHERE `user_id`= '$id' AND `password` = '$encrypt3'";
             $result2 = mysqli_query($connection, $sql2);
             $total  = mysqli_num_rows($result2);
-            $unique      = true;
-            if ($_SESSION['user-username'] != $_POST['username']) {
-                $username    = $_POST['username'];
-                $search      = "SELECT * FROM users WHERE username = '" . $username . "'";
-                $result      = mysqli_query($connection, $search);
-                if ($result) {
-                    while ($row = mysqli_fetch_assoc($result)) {
-                        if ($row['username'] == $username) {
-                            $unique = false;
+            if ($total == 1) {
+                if (strlen($password3) >= 6) {
+                    $password    = strval($_POST['password']);
+                    if (strlen($password) >= 6) {
+                        $password2   = strval($_POST['password2']);
+                        $encrypt     = sha1($password);
+                        if ($password == $password2) {
+                            $sql = "UPDATE `users` SET `password`='$encrypt' WHERE `user_id` = '$id'";
+                            $result = mysqli_query($connection, $sql);
+                            if ($result) {
+                                session_unset();
+                                session_destroy();
+                                header('location: ' . $config['URL'] . '/user/login');
+                                exit();
+                            }
                         }
                     }
                 }
             }
-            $username    = $_POST['username'];
-            if ($total == 1 && $unique) {
-                $username    = $_POST['username'];
-                $sql = "SELECT * FROM `users` WHERE `user_id`= '$id' AND `password` = '$encrypt'";
-                $result = mysqli_query($connection, $sql);
-                $total  = mysqli_num_rows($result);
-                $sql2 = "UPDATE `users` SET 
-                    `username`='" .
-                    (($_SESSION['user-username'] != $_POST['username']) ? $_POST['username'] : $_SESSION['user-username'])
-                    . "',`fullname`='" .
-                    (($_SESSION['user-fullname'] != $_POST['fullname']) ? $_POST['fullname'] : $_SESSION['user-fullname'])
-                    . "',`contact`='" .
-                    (($_SESSION['user-contact'] != $_POST['contact']) ? $_POST['contact'] : $_SESSION['user-contact'])
-                    . "',`company`='" .
-                    (($_SESSION['user-company'] != $_POST['comapny']) ? $_POST['comapny'] : $_SESSION['user-company'])
-                    . "',`address`='" .
-                    (($_SESSION['user-address'] != $_POST['address']) ? $_POST['address'] : $_SESSION['user-address'])
-                    . "',`country`='" .
-                    ((isset($_POST['country']) && $_SESSION['user-country'] != $_POST['country'] && $_SESSION['user-country'] != "") ? $_POST['country'] : $_SESSION['user-country'])
-                    . "',`city`='" .
-                    (($_SESSION['user-city'] != $_POST['city']) ? $_POST['city'] : $_SESSION['user-city'])
-                    . "' WHERE `user_id` = '$id'";
-                $_SESSION['user-fullname'] = $_SESSION['user-fullname'];
+        }
+        if (isset($_POST['submit3'])) {
+            $id = $_SESSION['user-id'];
+            $sql2 = "DELETE FROM `users` WHERE `user_id` = '$id'";
+            $result = mysqli_query($connection, $sql2);
+            if ($result) {
+                session_unset();
+                session_destroy();
+                header('location: ' . $config['URL'] . '/user/login');
+                exit();
+            }
+        }
+        if (isset($_POST['submit']) && isset($_POST['password'])) {
+            $password    = strval($_POST['password']);
+            $encrypt     = sha1($password);
+            $id = $_SESSION['user-id'];
+            if (strlen($password) >= 6) {
+                $sql2 = "SELECT * FROM `users` WHERE `user_id`= '$id' AND `password` = '$encrypt'";
                 $result2 = mysqli_query($connection, $sql2);
-                if ($result2) {
-                    $_SESSION['user-username'] = ($_SESSION['user-username'] != $_POST['username']) ? $_POST['username'] : $_SESSION['user-username'];
-                    $_SESSION['user-fullname'] = ($_SESSION['user-fullname'] != $_POST['fullname']) ? $_POST['fullname'] : $_SESSION['user-fullname'];
-                    $_SESSION['user-contact'] = ($_SESSION['user-contact'] != $_POST['contact']) ? $_POST['contact'] : $_SESSION['user-contact'];
-                    $_SESSION['user-company'] = ($_SESSION['user-company'] != $_POST['comapny']) ? $_POST['comapny'] : $_SESSION['user-company'];
-                    $_SESSION['user-address'] = ($_SESSION['user-address'] != $_POST['address']) ? $_POST['address'] : $_SESSION['user-address'];
-                    $_SESSION['user-country'] = ($_SESSION['user-country'] != $_POST['country']) ? $_POST['country'] : $_SESSION['user-country'];
-                    $_SESSION['user-city'] = ($_SESSION['user-city'] != $_POST['city']) ? $_POST['city'] : $_SESSION['user-city'];
-                    header('location: ' . $config['URL'] . '/user/settings');
-                    exit();
+                $total  = mysqli_num_rows($result2);
+                $unique      = true;
+                if ($_SESSION['user-username'] != $_POST['username']) {
+                    $username    = $_POST['username'];
+                    $search      = "SELECT * FROM users WHERE username = '" . $username . "'";
+                    $result      = mysqli_query($connection, $search);
+                    if ($result) {
+                        while ($row = mysqli_fetch_assoc($result)) {
+                            if ($row['username'] == $username) {
+                                $unique = false;
+                            }
+                        }
+                    }
+                }
+                $username    = $_POST['username'];
+                if ($total == 1 && $unique) {
+                    $username    = $_POST['username'];
+                    $sql = "SELECT * FROM `users` WHERE `user_id`= '$id' AND `password` = '$encrypt'";
+                    $result = mysqli_query($connection, $sql);
+                    $total  = mysqli_num_rows($result);
+                    $sql2 = "UPDATE `users` SET 
+                        `username`='" .
+                        (($_SESSION['user-username'] != $_POST['username']) ? $_POST['username'] : $_SESSION['user-username'])
+                        . "',`fullname`='" .
+                        (($_SESSION['user-fullname'] != $_POST['fullname']) ? $_POST['fullname'] : $_SESSION['user-fullname'])
+                        . "',`contact`='" .
+                        (($_SESSION['user-contact'] != $_POST['contact']) ? $_POST['contact'] : $_SESSION['user-contact'])
+                        . "',`company`='" .
+                        (($_SESSION['user-company'] != $_POST['comapny']) ? $_POST['comapny'] : $_SESSION['user-company'])
+                        . "',`address`='" .
+                        (($_SESSION['user-address'] != $_POST['address']) ? $_POST['address'] : $_SESSION['user-address'])
+                        . "',`country`='" .
+                        ((isset($_POST['country']) && $_SESSION['user-country'] != $_POST['country'] && $_SESSION['user-country'] != "") ? $_POST['country'] : $_SESSION['user-country'])
+                        . "',`city`='" .
+                        (($_SESSION['user-city'] != $_POST['city']) ? $_POST['city'] : $_SESSION['user-city'])
+                        . "' WHERE `user_id` = '$id'";
+                    $_SESSION['user-fullname'] = $_SESSION['user-fullname'];
+                    $result2 = mysqli_query($connection, $sql2);
+                    if ($result2) {
+                        $_SESSION['user-username'] = ($_SESSION['user-username'] != $_POST['username']) ? $_POST['username'] : $_SESSION['user-username'];
+                        $_SESSION['user-fullname'] = ($_SESSION['user-fullname'] != $_POST['fullname']) ? $_POST['fullname'] : $_SESSION['user-fullname'];
+                        $_SESSION['user-contact'] = ($_SESSION['user-contact'] != $_POST['contact']) ? $_POST['contact'] : $_SESSION['user-contact'];
+                        $_SESSION['user-company'] = ($_SESSION['user-company'] != $_POST['comapny']) ? $_POST['comapny'] : $_SESSION['user-company'];
+                        $_SESSION['user-address'] = ($_SESSION['user-address'] != $_POST['address']) ? $_POST['address'] : $_SESSION['user-address'];
+                        $_SESSION['user-country'] = ($_SESSION['user-country'] != $_POST['country']) ? $_POST['country'] : $_SESSION['user-country'];
+                        $_SESSION['user-city'] = ($_SESSION['user-city'] != $_POST['city']) ? $_POST['city'] : $_SESSION['user-city'];
+                        header('location: ' . $config['URL'] . '/user/settings');
+                        exit();
+                    }
                 }
             }
         }
+    } else {
+        header('location: ' . $config['URL'] . '/user/verify');
+        exit();
     }
 } else {
     if (isset($_SERVER['HTTP_REFERER'])) {

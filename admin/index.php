@@ -3,10 +3,15 @@
     session_start();
     $connection = mysqli_connect($config['DB_URL'],$config['DB_USERNAME'],$config['DB_PASSWORD'],$config['DB_DATABASE']);
     if (isset($_SESSION['isLoggedin'])){
-        if ($_SESSION['user-role'] != 'user') {
+        if ($_SESSION['isVerified']) {
+          if ($_SESSION['user-role'] != 'user') {
+          } else {
+              header('location: '. $config['URL'].'/user/login');
+              exit(); 
+          }
         } else {
-            header('location: '. $config['URL'].'/user/login');
-            exit(); 
+          header('location: '. $config['URL'].'/user/verify');
+          exit(); 
         }
     } else {
         header('location: '. $config['URL'].'/user/login');

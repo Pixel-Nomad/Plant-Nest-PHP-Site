@@ -3,19 +3,24 @@
     session_start();
     $connection = mysqli_connect($config['DB_URL'],$config['DB_USERNAME'],$config['DB_PASSWORD'],$config['DB_DATABASE']);
     if (isset($_SESSION['isLoggedin'])){
-        if ($_SESSION['user-role'] != 'user') {
-            if (isset($_POST['submit']) && isset($_POST['options'])){
-                $id = $_POST['old-orderid'];
-                $Status = $_POST['options'];
-                $sql = "UPDATE `orders` SET `Status` = '$Status' WHERE `order_id` = $id";
-                $result = mysqli_query($connection,$sql);
-                if ($result) {
-                    header('location: '. $config['URL'].'/admin/management/orders');
-                    exit(); 
-                }
-            }   
+        if ($_SESSION['isVerified']) {
+            if ($_SESSION['user-role'] != 'user') {
+                if (isset($_POST['submit']) && isset($_POST['options'])){
+                    $id = $_POST['old-orderid'];
+                    $Status = $_POST['options'];
+                    $sql = "UPDATE `orders` SET `Status` = '$Status' WHERE `order_id` = $id";
+                    $result = mysqli_query($connection,$sql);
+                    if ($result) {
+                        header('location: '. $config['URL'].'/admin/management/orders');
+                        exit(); 
+                    }
+                }   
+            } else {
+                header('location: '. $config['URL'].'/user/login');
+                exit(); 
+            }
         } else {
-            header('location: '. $config['URL'].'/user/login');
+            header('location: '. $config['URL'].'/user/verify');
             exit(); 
         }
     } else {
