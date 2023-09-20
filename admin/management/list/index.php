@@ -192,20 +192,20 @@
                   <thead>
                     <tr>
                       <th>ORDER ID</th>
-                      <th>Plant ID</th>
+                      <th>Plant Name</th>
                       <th>Quantity</th>
                     </tr>
                   </thead>
                   <tbody>
                     <?php
-                        $sql = "SELECT * FROM `order_items`";
+                        $sql = "SELECT * FROM order_items INNER JOIN plants ON order_items.plant_id = plants.plant_id";
                         $result = mysqli_query($connection,$sql);
                         $total  = mysqli_num_rows($result);
                         if ($total >= 1) {
                             while ($row = mysqli_fetch_assoc($result)) {
                                 echo '<tr>
                                 <th>'.$row['order_secret'].'</th>
-                                <th>'.$row['plant_id'].'</th>
+                                <th>'.$row['name'].'</th>
                                 <th>'.$row['quantity'].'</th>
                               </tr>';
                             }
@@ -215,7 +215,7 @@
                   <tfoot>
                     <tr>
                     <th>ORDER ID</th>
-                      <th>Plant ID</th>
+                      <th>Plant Name</th>
                       <th>Quantity</th>
                     </tr>
                   </tfoot>

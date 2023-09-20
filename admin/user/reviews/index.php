@@ -10,14 +10,15 @@ if (isset($_SESSION['isLoggedin'])) {
         $option = $_POST['option'];
         $currentTime = date("Y-m-d H:i:s");
         $startDate = date("Y-m-d H:i:s", strtotime("-$option days", strtotime($currentTime)));
-        $query = "SELECT * FROM reviews WHERE Review_Date >= '$startDate' AND Review_Date <= '$currentTime'";
+        $query = "SELECT 
+        reviews.id, reviews.plant_id, plants.name, reviews.user_id, users.username, reviews.review, reviews.stars, reviews.Review_Date FROM reviews INNER JOIN users ON reviews.user_id = users.user_id INNER JOIN plants ON reviews.plant_id = plants.plant_id  WHERE Review_Date >= '$startDate' AND Review_Date <= '$currentTime'";
         $result = mysqli_query($connection, $query);
         if ($result) {
           $filename = "$startDate _ $currentTime.csv";
           header("Content-Type: text/csv");
           header("Content-Disposition: attachment; filename=$filename");
           $output = fopen("php://output", "w");
-          fputcsv($output, array("id", "plant_id", "user_id", "Review_Date", "stars", "review"));
+          fputcsv($output, array("id", "plant_id", "Plane Name", "user_id", "User Name", "review", "stars", "Review_Date"));
           while ($row = mysqli_fetch_assoc($result)) {
             fputcsv($output, $row);
           }
@@ -29,14 +30,14 @@ if (isset($_SESSION['isLoggedin'])) {
         $currentTime = date("Y-m-d H:i:s", strtotime($currentTime));
         $startDate = $_POST['time_before'];
         $startDate = date("Y-m-d H:i:s", strtotime($startDate));
-        $query = "SELECT * FROM reviews WHERE Review_Date >= '$startDate' AND Review_Date <= '$currentTime'";
+        $query = "SELECT reviews.id, reviews.plant_id, plants.name, reviews.user_id, users.username, reviews.review, reviews.stars, reviews.Review_Date FROM reviews INNER JOIN users ON reviews.user_id = users.user_id INNER JOIN plants ON reviews.plant_id = plants.plant_id  WHERE Review_Date >= '$startDate' AND Review_Date <= '$currentTime'";
         $result = mysqli_query($connection, $query);
         if ($result) {
           $filename = "$startDate _ $currentTime.csv";
           header("Content-Type: text/csv");
           header("Content-Disposition: attachment; filename=$filename");
           $output = fopen("php://output", "w");
-          fputcsv($output, array("id", "plant_id", "user_id", "Review_Date", "stars", "review"));
+          fputcsv($output, array("id", "plant_id", "Plane Name", "user_id", "User Name", "review", "stars", "Review_Date"));
           while ($row = mysqli_fetch_assoc($result)) {
             fputcsv($output, $row);
           }
@@ -271,7 +272,9 @@ if (!$export) {
                       <tr>
                         <th>ID</th>
                         <th>Plant ID</th>
+                        <th>Plant Name</th>
                         <th>User ID</th>
+                        <th>User Name</th>
                         <th>review</th>
                         <th>Stars</th>
                         <th>Review Date</th>
@@ -279,7 +282,7 @@ if (!$export) {
                     </thead>
                     <tbody>
                       <?php
-                      $sql = "SELECT * FROM `reviews`";
+                      $sql = "SELECT reviews.*, users.username, plants.name FROM reviews INNER JOIN users ON reviews.user_id = users.user_id INNER JOIN plants ON reviews.plant_id = plants.plant_id ";
                       $result = mysqli_query($connection, $sql);
                       $total  = mysqli_num_rows($result);
                       if ($total >= 1) {
@@ -287,7 +290,9 @@ if (!$export) {
                           echo '<tr>
                                 <td>' . $row['id'] . '</td>
                                 <td>' . $row['plant_id'] . '</td>
+                                <td>' . $row['name'] . '</td>
                                 <td>' . $row['user_id'] . '</td>
+                                <td>' . $row['username'] . '</td>
                                 <td>' . $row['review'] . '</td>
                                 <td>' . $row['stars'] . '</td>
                                 <td>' . $row['Review_Date'] . '</td>
@@ -300,7 +305,9 @@ if (!$export) {
                       <tr>
                         <th>ID</th>
                         <th>Plant ID</th>
+                        <th>Plant Name</th>
                         <th>User ID</th>
+                        <th>User Name</th>
                         <th>review</th>
                         <th>Stars</th>
                         <th>Review Date</th>

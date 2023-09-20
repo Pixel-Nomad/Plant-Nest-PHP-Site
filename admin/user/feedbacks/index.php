@@ -10,14 +10,14 @@
               $option = $_POST['option'];
               $currentTime = date("Y-m-d H:i:s");
               $startDate = date("Y-m-d H:i:s", strtotime("-$option days", strtotime($currentTime)));
-              $query = "SELECT * FROM feedbacks WHERE Feedback_Date >= '$startDate' AND Feedback_Date <= '$currentTime'";
+              $query = "SELECT feedbacks.id, feedbacks.user_id, users.username, feedbacks.Feedback_Date, feedbacks.satisfaction, feedbacks.message FROM feedbacks INNER JOIN users ON feedbacks.user_id = users.user_id WHERE Feedback_Date >= '$startDate' AND Feedback_Date <= '$currentTime'";
               $result = mysqli_query($connection, $query);
               if ($result) {
                 $filename = "$startDate _ $currentTime.csv";
                 header("Content-Type: text/csv");
                 header("Content-Disposition: attachment; filename=$filename");
                 $output = fopen("php://output", "w");
-                fputcsv($output, array("id", "user_id", "Feedback_Date", "satisfaction", "message"));
+                fputcsv($output, array("id", "user_id", "username", "Feedback_Date", "satisfaction", "message"));
                 while ($row = mysqli_fetch_assoc($result)) {
                   fputcsv($output, $row);
                 }
@@ -29,14 +29,14 @@
               $currentTime = date("Y-m-d H:i:s", strtotime($currentTime));
               $startDate = $_POST['time_before'];
               $startDate = date("Y-m-d H:i:s", strtotime($startDate));
-              $query = "SELECT * FROM feedbacks WHERE Feedback_Date >= '$startDate' AND Feedback_Date <= '$currentTime'";
+              $query = "SELECT feedbacks.id, feedbacks.user_id, users.username, feedbacks.Feedback_Date, feedbacks.satisfaction, feedbacks.message FROM feedbacks INNER JOIN users ON feedbacks.user_id = users.user_id WHERE Feedback_Date >= '$startDate' AND Feedback_Date <= '$currentTime'";
               $result = mysqli_query($connection, $query);
               if ($result) {
                 $filename = "$startDate _ $currentTime.csv";
                 header("Content-Type: text/csv");
                 header("Content-Disposition: attachment; filename=$filename");
                 $output = fopen("php://output", "w");
-                fputcsv($output, array("id", "user_id", "Feedback_Date", "satisfaction", "message"));
+                fputcsv($output, array("id", "user_id", "username", "Feedback_Date", "satisfaction", "message"));
                 while ($row = mysqli_fetch_assoc($result)) {
                   fputcsv($output, $row);
                 }
@@ -275,6 +275,7 @@ if (!$export) {
                     <tr>
                       <th>ID</th>
                       <th>User ID</th>
+                      <th>User Name</th>
                       <th>Message</th>
                       <th>Satisfaction</th>
                       <th>Feedback Date</th>
@@ -282,7 +283,7 @@ if (!$export) {
                   </thead>
                   <tbody>
                     <?php
-                        $sql = "SELECT * FROM `feedbacks`";
+                        $sql = "SELECT * FROM feedbacks INNER JOIN users ON feedbacks.user_id = users.user_id";
                         $result = mysqli_query($connection,$sql);
                         $total  = mysqli_num_rows($result);
                         if ($total >= 1) {
@@ -290,6 +291,7 @@ if (!$export) {
                                 echo '<tr>
                                 <td>'.$row['id'].'</td>
                                 <td>'.$row['user_id'].'</td>
+                                <td>'.$row['username'].'</td>
                                 <td>'.$row['message'].'</td>
                                 <td>'.$row['satisfaction'].'</td>
                                 <td>'.$row['Feedback_Date'].'</td>
@@ -302,6 +304,7 @@ if (!$export) {
                     <tr>
                         <th>ID</th>
                       <th>User ID</th>
+                      <th>User Name</th>
                       <th>Message</th>
                       <th>Satisfaction</th>
                       <th>Feedback Date</th>

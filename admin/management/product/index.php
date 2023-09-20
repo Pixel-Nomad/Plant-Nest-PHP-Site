@@ -347,15 +347,16 @@ if (isset($_SESSION['isLoggedin'])) {
                                             <th>Description</th>
                                             <th>Price</th>
                                             <th>Quantity</th>
-                                            <th>Image</th>
                                             <th>Featured</th>
                                             <th>Category_id</th>
-                                            <th class="d-none"></th>
+                                            <th>Category_Name</th>
+                                            <th>Actions</th>
+                                            <th>Image</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <?php
-                                        $sql = "SELECT * FROM `plants`";
+                                        $sql = "SELECT * FROM plants INNER JOIN category ON plants.category_id = category.category_id";
                                         $result = mysqli_query($connection, $sql);
                                         $total  = mysqli_num_rows($result);
                                         if ($total >= 1) {
@@ -366,9 +367,9 @@ if (isset($_SESSION['isLoggedin'])) {
                                                             <td>' . $row['description'] . '</td>
                                                             <td>Rs.' . $row['price'] . '</td>
                                                             <td>' . $row['quantity'] . '</td>
-                                                            <td>' . $row['image'] . '</td>
                                                             <td>' . $row['featured'] . '</td>
                                                             <td>' . $row['category_id'] . '</td>
+                                                            <td>' . $row['Name'] . '</td>
                                                             <td>
                                                                 <button class="btn btn-danger open-review-form"  
                                                                 data-plant-id="' . $row['plant_id'] . '" 
@@ -385,6 +386,7 @@ if (isset($_SESSION['isLoggedin'])) {
                                                                     <input type="submit" class="btn btn-danger" value="Delete" name="submit"></input>
                                                                     </form>
                                                             </td>
+                                                            <td>' . $row['image'] . '</td>
                                                         </tr>';
                                             }
                                         }
@@ -397,10 +399,11 @@ if (isset($_SESSION['isLoggedin'])) {
                                             <th>Description</th>
                                             <th>Price</th>
                                             <th>Quantity</th>
-                                            <th>Image</th>
                                             <th>Featured</th>
                                             <th>Category_id</th>
-                                            <th class="d-none"></th>
+                                            <th>Category_Name</th>
+                                            <th>Actions</th>
+                                            <th>Image</th>
                                         </tr>
                                     </tfoot>
                                 </table>
