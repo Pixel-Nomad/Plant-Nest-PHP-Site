@@ -321,7 +321,10 @@ if (isset($_POST['submit3']) && isset($_POST['search-type'])) {
                                     <img src="' . $row['image'] . '" class="card-img-top image-fluid" alt="Painting"/>
                                     <div class="card-body">
                                         <h5 class="card-title text-center">' . $row['name'] . '</h5>
-                                        <div class="adjust-card">
+                                        <div class="adjust-card d-none d-sm-none d-md-flex d-lg-flex d-xl-flex d-xxl-flex">
+                                            <p class="card-text">' . $row['description'] . '</p>
+                                        </div>
+                                        <div class="-sm-flex d-md-none d-lg-none d-xl-none d-xxl-none">
                                             <p class="card-text">' . $row['description'] . '</p>
                                         </div>
                                     </div>
