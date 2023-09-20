@@ -1,6 +1,43 @@
 <?php
 require('../../config.php');
 session_start();
+
+function IsAlphabetic($str)
+{
+  return preg_match('/[a-zA-Z]/', $str);
+}
+
+function IsNumbers($str)
+{
+  return preg_match('/[0-9]/', $str);
+}
+
+function IsSpecial($str)
+{
+  return preg_match('/[^a-zA-Z0-9\s]/', $str);
+}
+
+function IsSpaces($str)
+{
+  return strpos($str, ' ') !== false;
+}
+
+function IsWhiteSpace($str)
+{
+  return preg_match('/\s/', $str);
+}
+
+function IsStartWithAlphaBetic($str)
+{
+  if (empty($str)) {
+    return false;
+  }
+
+  $firstChar = $str[0];
+
+  return preg_match('/[a-zA-Z]/', $firstChar);
+}
+
 $connection = mysqli_connect($config['DB_URL'], $config['DB_USERNAME'], $config['DB_PASSWORD'], $config['DB_DATABASE']);
 $passwordSection = false;
 if (isset($_SESSION['isLoggedin'])) {
@@ -53,52 +90,59 @@ if (isset($_SESSION['isLoggedin'])) {
                 $result2 = mysqli_query($connection, $sql2);
                 $total  = mysqli_num_rows($result2);
                 $unique      = true;
-                if ($_SESSION['user-username'] != $_POST['username']) {
-                    $username    = $_POST['username'];
-                    $search      = "SELECT * FROM users WHERE username = '" . $username . "'";
-                    $result      = mysqli_query($connection, $search);
-                    if ($result) {
-                        while ($row = mysqli_fetch_assoc($result)) {
-                            if ($row['username'] == $username) {
-                                $unique = false;
+                if (
+                    IsStartWithAlphaBetic($_POST['username']) && !IsSpecial($_POST['username']) && !IsSpaces($_POST['username']) && !IsWhiteSpace($_POST['username']) &&
+                    !IsNumbers($_POST['fullname']) && !IsSpecial($_POST['fullname']) &&
+                    !IsAlphabetic($_POST['contact']) && !IsSpecial($_POST['contact']) && !IsSpaces($_POST['contact']) && !IsWhiteSpace($_POST['contact']) &&
+                    !IsNumbers($_POST['city']) && !IsSpecial($_POST['city'])
+                  ){
+                    if ($_SESSION['user-username'] != $_POST['username']) {
+                        $username    = $_POST['username'];
+                        $search      = "SELECT * FROM users WHERE username = '" . $username . "'";
+                        $result      = mysqli_query($connection, $search);
+                        if ($result) {
+                            while ($row = mysqli_fetch_assoc($result)) {
+                                if ($row['username'] == $username) {
+                                    $unique = false;
+                                }
                             }
                         }
                     }
-                }
-                $username    = $_POST['username'];
-                if ($total == 1 && $unique) {
                     $username    = $_POST['username'];
-                    $sql = "SELECT * FROM `users` WHERE `user_id`= '$id' AND `password` = '$encrypt'";
-                    $result = mysqli_query($connection, $sql);
-                    $total  = mysqli_num_rows($result);
-                    $sql2 = "UPDATE `users` SET 
-                        `username`='" .
-                        (($_SESSION['user-username'] != $_POST['username']) ? $_POST['username'] : $_SESSION['user-username'])
-                        . "',`fullname`='" .
-                        (($_SESSION['user-fullname'] != $_POST['fullname']) ? $_POST['fullname'] : $_SESSION['user-fullname'])
-                        . "',`contact`='" .
-                        (($_SESSION['user-contact'] != $_POST['contact']) ? $_POST['contact'] : $_SESSION['user-contact'])
-                        . "',`company`='" .
-                        (($_SESSION['user-company'] != $_POST['comapny']) ? $_POST['comapny'] : $_SESSION['user-company'])
-                        . "',`address`='" .
-                        (($_SESSION['user-address'] != $_POST['address']) ? $_POST['address'] : $_SESSION['user-address'])
-                        . "',`country`='" .
-                        ((isset($_POST['country']) && $_SESSION['user-country'] != $_POST['country'] && $_SESSION['user-country'] != "") ? $_POST['country'] : $_SESSION['user-country'])
-                        . "',`city`='" .
-                        (($_SESSION['user-city'] != $_POST['city']) ? $_POST['city'] : $_SESSION['user-city'])
-                        . "' WHERE `user_id` = '$id'";
-                    $_SESSION['user-fullname'] = $_SESSION['user-fullname'];
-                    $result2 = mysqli_query($connection, $sql2);
-                    if ($result2) {
-                        $_SESSION['user-username'] = ($_SESSION['user-username'] != $_POST['username']) ? $_POST['username'] : $_SESSION['user-username'];
-                        $_SESSION['user-fullname'] = ($_SESSION['user-fullname'] != $_POST['fullname']) ? $_POST['fullname'] : $_SESSION['user-fullname'];
-                        $_SESSION['user-contact'] = ($_SESSION['user-contact'] != $_POST['contact']) ? $_POST['contact'] : $_SESSION['user-contact'];
-                        $_SESSION['user-company'] = ($_SESSION['user-company'] != $_POST['comapny']) ? $_POST['comapny'] : $_SESSION['user-company'];
-                        $_SESSION['user-address'] = ($_SESSION['user-address'] != $_POST['address']) ? $_POST['address'] : $_SESSION['user-address'];
-                        $_SESSION['user-country'] = ($_SESSION['user-country'] != $_POST['country']) ? $_POST['country'] : $_SESSION['user-country'];
-                        $_SESSION['user-city'] = ($_SESSION['user-city'] != $_POST['city']) ? $_POST['city'] : $_SESSION['user-city'];
-                        header('location: ' . $config['URL'] . '/user/settings');
-                        exit();
+                    if ($total == 1 && $unique) {
+                        $username    = $_POST['username'];
+                        $sql = "SELECT * FROM `users` WHERE `user_id`= '$id' AND `password` = '$encrypt'";
+                        $result = mysqli_query($connection, $sql);
+                        $total  = mysqli_num_rows($result);
+                        $sql2 = "UPDATE `users` SET 
+                            `username`='" .
+                            (($_SESSION['user-username'] != $_POST['username']) ? $_POST['username'] : $_SESSION['user-username'])
+                            . "',`fullname`='" .
+                            (($_SESSION['user-fullname'] != $_POST['fullname']) ? $_POST['fullname'] : $_SESSION['user-fullname'])
+                            . "',`contact`='" .
+                            (($_SESSION['user-contact'] != $_POST['contact']) ? $_POST['contact'] : $_SESSION['user-contact'])
+                            . "',`company`='" .
+                            (($_SESSION['user-company'] != $_POST['comapny']) ? $_POST['comapny'] : $_SESSION['user-company'])
+                            . "',`address`='" .
+                            (($_SESSION['user-address'] != $_POST['address']) ? $_POST['address'] : $_SESSION['user-address'])
+                            . "',`country`='" .
+                            ((isset($_POST['country']) && $_SESSION['user-country'] != $_POST['country'] && $_SESSION['user-country'] != "") ? $_POST['country'] : $_SESSION['user-country'])
+                            . "',`city`='" .
+                            (($_SESSION['user-city'] != $_POST['city']) ? $_POST['city'] : $_SESSION['user-city'])
+                            . "' WHERE `user_id` = '$id'";
+                        $_SESSION['user-fullname'] = $_SESSION['user-fullname'];
+                        $result2 = mysqli_query($connection, $sql2);
+                        if ($result2) {
+                            $_SESSION['user-username'] = ($_SESSION['user-username'] != $_POST['username']) ? $_POST['username'] : $_SESSION['user-username'];
+                            $_SESSION['user-fullname'] = ($_SESSION['user-fullname'] != $_POST['fullname']) ? $_POST['fullname'] : $_SESSION['user-fullname'];
+                            $_SESSION['user-contact'] = ($_SESSION['user-contact'] != $_POST['contact']) ? $_POST['contact'] : $_SESSION['user-contact'];
+                            $_SESSION['user-company'] = ($_SESSION['user-company'] != $_POST['comapny']) ? $_POST['comapny'] : $_SESSION['user-company'];
+                            $_SESSION['user-address'] = ($_SESSION['user-address'] != $_POST['address']) ? $_POST['address'] : $_SESSION['user-address'];
+                            $_SESSION['user-country'] = ($_SESSION['user-country'] != $_POST['country']) ? $_POST['country'] : $_SESSION['user-country'];
+                            $_SESSION['user-city'] = ($_SESSION['user-city'] != $_POST['city']) ? $_POST['city'] : $_SESSION['user-city'];
+                            header('location: ' . $config['URL'] . '/user/settings');
+                            exit();
+                        }
                     }
                 }
             }
@@ -304,19 +348,33 @@ if (isset($_SESSION['isLoggedin'])) {
                                                         <label for="floatingInput">User Name</label>
                                                         <p class="card-text text-danger"><?php
                                                                                             if (isset($_POST['submit'])) {
-                                                                                                $username       = $_POST['username'];
-                                                                                                $search      = "SELECT * FROM users WHERE username='" . $username . "'";
-                                                                                                $result      = mysqli_query($connection, $search);
-                                                                                                $unique      = true;
-                                                                                                if ($result) {
-                                                                                                    while ($row = mysqli_fetch_assoc($result)) {
-                                                                                                        if ($row['username'] == $username) {
-                                                                                                            $unique = false;
+                                                                                                if (!IsStartWithAlphaBetic($_POST['username'])){
+                                                                                                    echo 'Username must startwith alphabet';
+                                                                                                } else {
+                                                                                                    if (IsSpaces($_POST['username']) && IsWhiteSpace($_POST['username'])){
+                                                                                                      echo 'Make sure there are no spaces in username';
+                                                                                                    } else {
+                                                                                                      if (IsSpecial($_POST['username'])) {
+                                                                                                        echo 'Make sure there are no special characters in username';
+                                                                                                      } else {
+                                                                                                            if ($_SESSION['user-username'] != $_POST['username']){
+                                                                                                                $username       = $_POST['username'];
+                                                                                                                $search      = "SELECT * FROM users WHERE username='" . $username . "'";
+                                                                                                                $result      = mysqli_query($connection, $search);
+                                                                                                                $unique      = true;
+                                                                                                                if ($result) {
+                                                                                                                    while ($row = mysqli_fetch_assoc($result)) {
+                                                                                                                        if ($row['username'] == $username) {
+                                                                                                                            $unique = false;
+                                                                                                                        }
+                                                                                                                    }
+                                                                                                                }
+                                                                                                                if (!$unique) {
+                                                                                                                    echo 'Username Already Taken';
+                                                                                                                }
+                                                                                                            }
                                                                                                         }
                                                                                                     }
-                                                                                                }
-                                                                                                if (!$unique) {
-                                                                                                    echo 'Username Already Taken';
                                                                                                 }
                                                                                             }
                                                                                             ?></p>
@@ -324,10 +382,38 @@ if (isset($_SESSION['isLoggedin'])) {
                                                     <div class="form-floating mb-3">
                                                         <input type="text" class="form-control" value='<?php echo $email = $_SESSION['user-fullname']; ?>' required name="fullname" id="floatingInput" placeholder="name@example.com">
                                                         <label for="floatingInput">Full Name</label>
+                                                        <p class="card-text text-danger"><?php
+                                                                                        if (isset($_POST['submit'])) {
+                                                                                            
+                                                                                            if (IsNumbers($_POST['fullname'])){
+                                                                                            echo 'Make sure there are no numbers in fullname';
+                                                                                            } else {
+                                                                                            if (IsSpecial($_POST['fullname'])){
+                                                                                                echo 'Make sure there are no special characters in fullname';
+                                                                                            }
+                                                                                            }
+                                                                                        }
+                                                                                        ?></p>
                                                     </div>
                                                     <div class="form-floating mb-3">
-                                                        <input type="number" class="form-control" value='<?php echo $email = $_SESSION['user-contact']; ?>' required name="contact" id="floatingInput" placeholder="name@example.com">
+                                                        <input type="text" maxlength="11" class="form-control" value='<?php echo $email = $_SESSION['user-contact']; ?>' required name="contact" id="floatingInput" placeholder="name@example.com">
                                                         <label for="floatingInput">Contact Number</label>
+                                                        <p class="card-text text-danger"><?php
+                                                                                        if (isset($_POST['submit'])) {
+                                                                                            
+                                                                                            if (IsAlphabetic($_POST['contact'])){
+                                                                                            echo 'Make sure there are no Alphabets in contact';
+                                                                                            } else {
+                                                                                            if (IsSpecial($_POST['contact'])){
+                                                                                                echo 'Make sure there are no special characters in contact';
+                                                                                            } else {
+                                                                                                if (IsSpaces($_POST['contact']) && IsWhiteSpace($_POST['contact'])){
+                                                                                                echo 'Make sure there are no spaces in contact';
+                                                                                                }
+                                                                                            }
+                                                                                            }
+                                                                                        }
+                                                                                        ?></p>
                                                     </div>
                                                     <div class="form-floating mb-3">
                                                         <input type="text" class="form-control" value='<?php echo $email = $_SESSION['user-company']; ?>' name="comapny" id="floatingInput" placeholder="name@example.com">
@@ -599,6 +685,18 @@ if (isset($_SESSION['isLoggedin'])) {
                                                     <div class="form-floating mb-3">
                                                         <input type="text" class="form-control" value='<?php echo $email = $_SESSION['user-city']; ?>' required name="city" id="floatingInput" placeholder="name@example.com">
                                                         <label for="floatingInput">City</label>
+                                                        <p class="card-text text-danger"><?php
+                                                                                        if (isset($_POST['submit'])) {
+                                                                                            
+                                                                                            if (IsNumbers($_POST['city'])){
+                                                                                            echo 'Make sure there are no numbers in city';
+                                                                                            } else {
+                                                                                            if (IsSpecial($_POST['city'])){
+                                                                                                echo 'Make sure there are no special characters in city';
+                                                                                            }
+                                                                                            }
+                                                                                        }
+                                                                                        ?></p>
                                                     </div>
                                                     <div class="form-floating mb-3">
                                                         <input type="password" class="form-control" required name="password" id="floatingInput" placeholder="name@example.com">
