@@ -12,19 +12,23 @@
                     $result = mysqli_query($connection,$sql);
                     if ($result) {
                         header('location: '. $config['URL'].'/admin/management/orders');
-                        exit(); 
+                    mysqli_close($connection);
+                    exit(); 
                     }
                 }   
             } else {
                 header('location: '. $config['URL'].'/user/login');
-                exit(); 
+                    mysqli_close($connection);
+                    exit(); 
             }
         } else {
             header('location: '. $config['URL'].'/user/verify');
+            mysqli_close($connection);
             exit(); 
         }
     } else {
         header('location: '. $config['URL'].'/user/login');
+        mysqli_close($connection);
         exit(); 
     }
 ?>
@@ -295,7 +299,7 @@
             <button class="close-review-form" id="closeReviewForm"><i class="fas fa-times"></i></button>
             <h2 class="mb-4">Update</h2>
             <form method="post">
-            <label for="reviewText" class="form-label">Category ID</label>
+            <label for="reviewText" class="form-label">Status</label>
             <div class="form-check">
                 <input class="form-check-input" type="radio" name="options" id="Cancelled" value="Cancelled" checked>
                 <label class="form-check-label" for="Cancelled">
@@ -310,7 +314,7 @@
             </div>
             <div class="form-check">
                 <input class="form-check-input" type="radio" name="options" id="Picked-UP" value="Picked UP" checked>
-                <label class="form-check-label" for="Picke-UP">
+                <label class="form-check-label" for="Picked-UP">
                     Picked UP
                 </label>
             </div>

@@ -15,19 +15,23 @@
                         $_SESSION['user-role'] = $role;
                     }
                     header('location: '. $config['URL'].'/admin/user/management');
+                    mysqli_close($connection);
                     exit(); 
                 }
             } 
             } else {
                 header('location: '. $config['URL'].'/user/login');
-                exit(); 
+                    mysqli_close($connection);
+                    exit(); 
             }
         } else {
             header('location: '. $config['URL'].'/user/verify');
+            mysqli_close($connection);
             exit(); 
         }
     } else {
         header('location: '. $config['URL'].'/user/login');
+        mysqli_close($connection);
         exit(); 
     }
 ?>
@@ -247,6 +251,7 @@
                       <th>Address</th>
                       <th>Country</th>
                       <th>City</th>
+                      <th>Verified</th>
                       <th>Role</th>
                       <th>Date Created</th>
                       <th class="d-none"></th>
@@ -269,6 +274,7 @@
                               <td>'.$row['address'].'</td>
                               <td>'.$row['country'].'</td>
                               <td>'.$row['city'].'</td>
+                              <td>'.$row['verified'].'</td>
                               <td>'.$row['role'].'</td>
                               <td>'.$row['date'].'</td>';
                               if ($_SESSION['user-role'] == 'master' ){
@@ -297,6 +303,7 @@
                       <th>Address</th>
                       <th>Country</th>
                       <th>City</th>
+                      <th>Verified</th>
                       <th>Role</th>
                       <th>Date Created</th>
                       <th class="d-none"></th>
@@ -314,7 +321,7 @@
             <button class="close-review-form" id="closeReviewForm"><i class="fas fa-times"></i></button>
             <h2 class="mb-4">Update</h2>
             <form method="post">
-            <label for="reviewText" class="form-label">Category ID</label>
+            <label for="reviewText" class="form-label">Roles</label>
             <div class="form-check">
                 <input class="form-check-input" type="radio" name="options" id="user" value="user" checked>
                 <label class="form-check-label" for="user">

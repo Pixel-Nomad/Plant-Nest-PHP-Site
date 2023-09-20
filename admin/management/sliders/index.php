@@ -11,7 +11,8 @@
                     $result = mysqli_query($connection,$sql);
                     if ($result) {
                         header('location: '. $config['URL'].'/admin/management/sliders');
-                        exit(); 
+                    mysqli_close($connection);
+                    exit(); 
                     }
                 }
                 if (isset($_POST['submit2']) && isset($_POST['sliderid'])){
@@ -30,7 +31,8 @@
                     $result = mysqli_query($connection,$sql);
                     if ($result) {
                         header('location: '. $config['URL'].'/admin/management/sliders');
-                        exit(); 
+                    mysqli_close($connection);
+                    exit(); 
                     }
                 }
                 if (isset($_POST['submit3']) && isset($_POST['new-id']) && isset($_POST['new-image'])){
@@ -52,7 +54,8 @@
                             $result2 = mysqli_query($connection,$sql2);
                             if ($result2) {
                                 header('location: '. $config['URL'].'/admin/management/sliders');
-                                exit(); 
+                    mysqli_close($connection);
+                    exit(); 
                             }
                         } else {
                             $sql2 = "INSERT INTO `sliders` (`id`,`image`,`text`,`description`,`dark`) 
@@ -60,7 +63,8 @@
                             $result2 = mysqli_query($connection,$sql2);
                             if ($result2) {
                                 header('location: '. $config['URL'].'/admin/management/sliders');
-                                exit(); 
+                    mysqli_close($connection);
+                    exit(); 
                             }
                         }
                     } else {
@@ -69,20 +73,24 @@
                         $result = mysqli_query($connection,$sql);
                         if ($result) {
                             header('location: '. $config['URL'].'/admin/management/sliders');
-                            exit(); 
+                    mysqli_close($connection);
+                    exit(); 
                         }
                     }
                 }
             } else {
                 header('location: '. $config['URL'].'/user/login');
-                exit(); 
+                    mysqli_close($connection);
+                    exit(); 
             }
         } else {
             header('location: '. $config['URL'].'/user/verify');
+            mysqli_close($connection);
             exit(); 
         }
     } else {
         header('location: '. $config['URL'].'/user/login');
+        mysqli_close($connection);
         exit(); 
     }
 ?>

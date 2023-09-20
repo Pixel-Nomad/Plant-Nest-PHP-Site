@@ -72,7 +72,8 @@
                 }
                 SkipChecks:
                 header('location: '.$config['URL'].'/user/forget');
-                exit();
+                    mysqli_close($connection);
+                    exit();
                 check:
             }
         }
@@ -103,7 +104,8 @@
                         session_unset();
                         session_destroy();
                         header('location: '.$config['URL'].'/user/login');
-                        exit();
+                    mysqli_close($connection);
+                    exit();
                     }
                 }
             }
@@ -114,9 +116,11 @@
 } else {
     if(isset($_SERVER['HTTP_REFERER'])) {
         header('location: '. $_SERVER['HTTP_REFERER']);
+        mysqli_close($connection);
         exit();
     } else {
         header('location: '. $config['URL']);
+        mysqli_close($connection);
         exit();
     }
 }

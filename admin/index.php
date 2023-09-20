@@ -7,14 +7,17 @@
           if ($_SESSION['user-role'] != 'user') {
           } else {
               header('location: '. $config['URL'].'/user/login');
+              mysqli_close($connection);
               exit(); 
           }
         } else {
           header('location: '. $config['URL'].'/user/verify');
+          mysqli_close($connection);
           exit(); 
         }
     } else {
         header('location: '. $config['URL'].'/user/login');
+        mysqli_close($connection);
         exit(); 
     }
 ?>

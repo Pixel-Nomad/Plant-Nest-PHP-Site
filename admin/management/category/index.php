@@ -11,6 +11,7 @@
                     $result = mysqli_query($connection,$sql);
                     if ($result) {
                         header('location: '. $config['URL'].'/admin/management/category');
+                        mysqli_close($connection);
                         exit(); 
                     }
                 }
@@ -26,6 +27,7 @@
                     $result2 = mysqli_query($connection,$sql2);
                     if ($result) {
                         header('location: '. $config['URL'].'/admin/management/category');
+                        mysqli_close($connection);
                         exit(); 
                     }
                 }
@@ -41,6 +43,7 @@
                             $result2 = mysqli_query($connection,$sql2);
                             if ($result2) {
                                 header('location: '. $config['URL'].'/admin/management/category');
+                                mysqli_close($connection);
                                 exit(); 
                             }
                         } else {
@@ -48,6 +51,7 @@
                             $result2 = mysqli_query($connection,$sql2);
                             if ($result2) {
                                 header('location: '. $config['URL'].'/admin/management/category');
+                                mysqli_close($connection);
                                 exit(); 
                             }
                         }
@@ -56,20 +60,24 @@
                         $result = mysqli_query($connection,$sql);
                         if ($result) {
                             header('location: '. $config['URL'].'/admin/management/category');
+                            mysqli_close($connection);
                             exit(); 
                         }
                     }
                 }
             } else {
                 header('location: '. $config['URL'].'/user/login');
+                mysqli_close($connection);
                 exit(); 
             }
         } else {
             header('location: '. $config['URL'].'/user/verify');
+            mysqli_close($connection);
             exit(); 
         }
     } else {
         header('location: '. $config['URL'].'/user/login');
+        mysqli_close($connection);
         exit(); 
     }
 ?>

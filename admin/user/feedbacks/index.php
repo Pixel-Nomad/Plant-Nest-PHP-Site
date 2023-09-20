@@ -2,21 +2,66 @@
     require ('../../../config.php'); 
     session_start();
     $connection = mysqli_connect($config['DB_URL'],$config['DB_USERNAME'],$config['DB_PASSWORD'],$config['DB_DATABASE']);
+    $export = false;
     if (isset($_SESSION['isLoggedin'])){
         if ($_SESSION['isVerified']) {
           if ($_SESSION['user-role'] != 'user') {
+            if (isset($_POST['Export1'])) {
+              $option = $_POST['option'];
+              $currentTime = date("Y-m-d H:i:s");
+              $startDate = date("Y-m-d H:i:s", strtotime("-$option days", strtotime($currentTime)));
+              $query = "SELECT * FROM feedbacks WHERE Feedback_Date >= '$startDate' AND Feedback_Date <= '$currentTime'";
+              $result = mysqli_query($connection, $query);
+              if ($result) {
+                $filename = "$startDate _ $currentTime.csv";
+                header("Content-Type: text/csv");
+                header("Content-Disposition: attachment; filename=$filename");
+                $output = fopen("php://output", "w");
+                fputcsv($output, array("id", "user_id", "Feedback_Date", "satisfaction", "message"));
+                while ($row = mysqli_fetch_assoc($result)) {
+                  fputcsv($output, $row);
+                }
+                $export = true;
+              }
+            }
+            if (isset($_POST['Export2'])) {
+              $currentTime = $_POST['time_after'];
+              $currentTime = date("Y-m-d H:i:s", strtotime($currentTime));
+              $startDate = $_POST['time_before'];
+              $startDate = date("Y-m-d H:i:s", strtotime($startDate));
+              $query = "SELECT * FROM feedbacks WHERE Feedback_Date >= '$startDate' AND Feedback_Date <= '$currentTime'";
+              $result = mysqli_query($connection, $query);
+              if ($result) {
+                $filename = "$startDate _ $currentTime.csv";
+                header("Content-Type: text/csv");
+                header("Content-Disposition: attachment; filename=$filename");
+                $output = fopen("php://output", "w");
+                fputcsv($output, array("id", "user_id", "Feedback_Date", "satisfaction", "message"));
+                while ($row = mysqli_fetch_assoc($result)) {
+                  fputcsv($output, $row);
+                }
+                $export = true;
+              }
+            }
           } else {
               header('location: '. $config['URL'].'/user/login');
-              exit(); 
+                    mysqli_close($connection);
+                    exit(); 
           }
         } else {
           header('location: '. $config['URL'].'/user/verify');
+          mysqli_close($connection);
           exit(); 
         }
     } else {
         header('location: '. $config['URL'].'/user/login');
+        mysqli_close($connection);
         exit(); 
     }
+?>
+
+<?php
+if (!$export) {
 ?>
 
 <!DOCTYPE html>
@@ -36,6 +81,43 @@
     <title>Plant Nest</title> 
     <link rel="icon" href='<?php echo $config['URL']?>/assets/image/fav/fav.ico' type="image/x-icon">
     <link rel="shortcut icon" href='<?php echo $config['URL']?>/assets/image/fav/fav.ico' type="image/x-icon">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/all.css" integrity="sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ" crossorigin="anonymous" />
+    <style>
+      /* Overlay */
+      .review-form-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.7);
+        justify-content: center;
+        align-items: center;
+      }
+
+      /* Form */
+      .review-form {
+        background-color: white;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.3);
+        width: 80%;
+        max-width: 500px;
+        position: relative;
+      }
+
+      /* Close button */
+      .close-review-form {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        background: none;
+        border: none;
+        font-size: 24px;
+        cursor: pointer;
+      }
+    </style>
 </head>
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
@@ -176,6 +258,9 @@
         <div class="col-md-12">
           <h4>User Feedbacks</h4>
         </div>
+        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+          <button class="btn btn-primary open-review-form2" type="button">Export Feedbacks</button>
+        </div>
       </div>
       <div class="row">
         <div class="col-md-12 mb-3">
@@ -229,6 +314,45 @@
         </div>
       </div>
     </div>
+    <div class="review-form-overlay" id="reviewFormOverlay2">
+        <div class="review-form">
+          <button class="close-review-form" id="closeReviewForm2"><i class="fas fa-times"></i></button>
+          <h2 class="mb-4">Export All Feedbacks</h2>
+          <form method="post">
+            <div class="form-floating mb-3">
+              <select class="form-select" name="option" required id="floatingCountry">
+                <option value="" disabled selected>Select Duration</option>
+                <option value="1">1 Day</option>
+                <option value="7">7 Day</option>
+                <option value="30">30 Day</option>
+              </select>
+              <label for="floatingCountry">Duration</label>
+            </div>
+            <input type="submit" class="btn btn-primary" value="Export" name="Export1"></input>
+          </form>
+          <br>
+          <button class="btn btn-primary open-review-form4">Export By Dates</button>
+        </div>
+      </div>
+      <div class="review-form-overlay" id="reviewFormOverlay4">
+        <div class="review-form">
+          <button class="close-review-form" id="closeReviewForm4"><i class="fas fa-times"></i></button>
+          <h2 class="mb-4">Export All Feedbacks</h2>
+          <form method="post">
+            <label>From</label>
+            <input type="datetime-local" name="time_before" required>
+            <br>
+            <br>
+            <label>To</label>
+            <input type="datetime-local" name="time_after" required>
+            <br>
+            <br>
+            <input type="submit" class="btn btn-primary" value="Export" name="Export2"></input>
+          </form>
+          <br>
+          <button class="btn btn-primary open-review-form2">Export By Option</button>
+        </div>
+      </div>
   </main>
     <script src="<?php echo $config['URL']?>/assets/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@3.0.2/dist/chart.min.js"></script>
@@ -236,9 +360,38 @@
     <script src="<?php echo $config['URL']?>/assets/js/jquery.dataTables.min.js"></script>
     <script src="<?php echo $config['URL']?>/assets/js/dataTables.bootstrap5.min.js"></script>
     <script src="<?php echo $config['URL']?>/assets/js/script.js"></script>
+    <script>
+      const openReviewFormButtons2 = document.querySelectorAll(".open-review-form2");
+
+      // Add a click event listener to each button
+      openReviewFormButtons2.forEach(button => {
+        button.addEventListener("click", function() {
+          document.getElementById("reviewFormOverlay4").style.display = "none";
+          document.getElementById("reviewFormOverlay2").style.display = "flex";
+        });
+      });
+      document.getElementById("closeReviewForm2").addEventListener("click", function() {
+        document.getElementById("reviewFormOverlay2").style.display = "none";
+      });
+    </script>
+    <script>
+      const openReviewFormButtons4 = document.querySelectorAll(".open-review-form4");
+
+      // Add a click event listener to each button
+      openReviewFormButtons4.forEach(button => {
+        button.addEventListener("click", function() {
+          document.getElementById("reviewFormOverlay2").style.display = "none";
+          document.getElementById("reviewFormOverlay4").style.display = "flex";
+        });
+      });
+      document.getElementById("closeReviewForm4").addEventListener("click", function() {
+        document.getElementById("reviewFormOverlay4").style.display = "none";
+      });
+    </script>
 </body>
 </html>
 
 <?php
-    mysqli_close($connection);
+}
+mysqli_close($connection);
 ?>

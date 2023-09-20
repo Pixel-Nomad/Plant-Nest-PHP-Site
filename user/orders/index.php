@@ -11,21 +11,25 @@
                 
                 if ($result) {
                     header('location: '.$config['URL'].'/user/orders');
-                    exit();
+        mysqli_close($connection);
+        exit();
                 }
             }
         } else {
             header('location: '.$config['URL'].'/user/verify');
-            exit();
+        mysqli_close($connection);
+        exit();
         }
         
     } else {
         if(isset($_SERVER['HTTP_REFERER'])) {
             header('location: '. $_SERVER['HTTP_REFERER']);
-            exit();
+        mysqli_close($connection);
+        exit();
         } else {
             header('location: '. $config['URL']);
-            exit();
+        mysqli_close($connection);
+        exit();
         }
     }
 ?>

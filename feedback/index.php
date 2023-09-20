@@ -13,19 +13,23 @@
                 $result = mysqli_query($connection,$sql);
                 if ($result) {
                     header('location: '. $config['URL'].'/feedback/thanks.php');
+                    mysqli_close($connection);
                     exit();
                 }
             }
         } else {
                 header('location: '. $config['URL'].'/user/verify');
-                exit();
+                    mysqli_close($connection);
+                    exit();
         }
     } else {
         if(isset($_SERVER['HTTP_REFERER'])) {
             header('location: '. $_SERVER['HTTP_REFERER']);
+            mysqli_close($connection);
             exit();
         } else {
             header('location: '. $config['URL'].'/user/login');
+            mysqli_close($connection);
             exit();
         }
     }

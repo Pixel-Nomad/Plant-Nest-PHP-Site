@@ -18,22 +18,26 @@ if (isset($_POST['submit']) && isset($_POST['plant_id'])) {
             $total  = mysqli_num_rows($result);
             if ($total == 1) {
                 header('location: ' . $config['URL'] . '/cart');
-                exit();
+                    mysqli_close($connection);
+                    exit();
             } else {
                 $sql2 = "INSERT INTO `cart` (`user_id`, `plant_id`, `Quantity`) 
                     VALUES ($user_id, $plant_id, 1)";
                 $result2 = mysqli_query($connection, $sql2);
                 if ($result2) {
                     header('location: ' . $config['URL'] . '/cart');
+                    mysqli_close($connection);
                     exit();
                 }
             }
         } else {
             header('location: ' . $config['URL'] . '/user/verify');
+            mysqli_close($connection);
             exit();
         }
     } else {
         header('location: ' . $config['URL'] . '/user/login');
+        mysqli_close($connection);
         exit();
     }
 }
@@ -47,6 +51,7 @@ if (isset($_POST['submit2']) && isset($_POST['plantId'])) {
     $result = mysqli_query($connection, $sql);
     if ($result) {
         header('location: ' . $config['URL'] . '/products');
+        mysqli_close($connection);
         exit();
     }
 }
@@ -54,9 +59,11 @@ if (isset($_POST['submit3']) && isset($_POST['search-type'])) {
     if ($_POST['search-type'] == 'name' || $_POST['search-type'] == 'description') {
         if (isWhitespaceString($_POST['search-data'])) {
             header('location: ' . $config['URL'] . '/products');
+            mysqli_close($connection);
             exit();
         } else {
             header('location: ' . $config['URL'] . '/products/index.php?type=' . $_POST['search-type'] . '&data=' . $_POST['search-data']);
+            mysqli_close($connection);
             exit();
         }
     }
@@ -115,6 +122,24 @@ if (isset($_POST['submit3']) && isset($_POST['search-type'])) {
             border: none;
             font-size: 24px;
             cursor: pointer;
+        }
+        .adjust-card {
+            height: 20vh;
+            max-height: 20vh;
+            overflow-y: scroll;
+        }
+        .adjust-card::-webkit-scrollbar {
+            width: 0.5vh; /* Set the width of the scrollbar */
+        }
+
+        .adjust-card::-webkit-scrollbar-thumb {
+            background-color: black; /* Color of the scrollbar thumb */
+            border-radius: 2vh;
+        }
+
+            /* Hide the background behind the scrollbar */
+            .adjust-card::-webkit-scrollbar-track {
+            background: transparent; /* No background color for the scrollbar track */
         }
     </style>
 </head>
@@ -296,7 +321,9 @@ if (isset($_POST['submit3']) && isset($_POST['search-type'])) {
                                     <img src="' . $row['image'] . '" class="card-img-top image-fluid" alt="Painting"/>
                                     <div class="card-body">
                                         <h5 class="card-title text-center">' . $row['name'] . '</h5>
-                                        <p class="card-text">' . $row['description'] . '</p>
+                                        <div class="adjust-card">
+                                            <p class="card-text">' . $row['description'] . '</p>
+                                        </div>
                                     </div>
                                     <hr class="divider" />
                                     <div class="row">

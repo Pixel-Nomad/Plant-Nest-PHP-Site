@@ -125,7 +125,8 @@ if (isset($_SESSION['isLoggedin'])) {
                 if ($result3) {
                     $_SESSION['isVerified'] = true;
                     header('location: ' . $config['URL']);
-                    exit();
+        mysqli_close($connection);
+        exit();
                 }
             } else {
                 $wrong = '<div class="row row-cols-1 row-cols-md-3">
@@ -140,18 +141,22 @@ if (isset($_SESSION['isLoggedin'])) {
     } else {
         if (isset($_SERVER['HTTP_REFERER'])) {
             header('location: ' . $_SERVER['HTTP_REFERER']);
-            exit();
+        mysqli_close($connection);
+        exit();
         } else {
             header('location: ' . $config['URL']);
-            exit();
+        mysqli_close($connection);
+        exit();
         }
     }
 } else {
     if (isset($_SERVER['HTTP_REFERER'])) {
         header('location: ' . $_SERVER['HTTP_REFERER']);
+        mysqli_close($connection);
         exit();
     } else {
         header('location: ' . $config['URL']);
+        mysqli_close($connection);
         exit();
     }
 }

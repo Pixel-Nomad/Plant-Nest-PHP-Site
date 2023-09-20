@@ -24,6 +24,7 @@ if (isset($_SESSION['isLoggedin'])) {
                 $result = mysqli_query($connection, $sql);
                 if ($result) {
                     header('location: ' . $config['URL'] . '/cart');
+                    mysqli_close($connection);
                     exit();
                 }
             } else {
@@ -31,6 +32,7 @@ if (isset($_SESSION['isLoggedin'])) {
                 $result = mysqli_query($connection, $sql);
                 if ($result) {
                     header('location: ' . $config['URL'] . '/cart');
+                    mysqli_close($connection);
                     exit();
                 }
             }
@@ -77,7 +79,8 @@ if (isset($_SESSION['isLoggedin'])) {
                         $result4 = mysqli_query($connection, $sql6);
                         if ($result4) {
                             header('location: ' . $config['URL'] . '/thanks.php');
-                            exit();
+                    mysqli_close($connection);
+                    exit();
                         }
                     }
                 }
@@ -87,18 +90,22 @@ if (isset($_SESSION['isLoggedin'])) {
             unset($_POST['checkoutBtn-no']);
             unset($_POST['checkoutBtn']);
             header('location: ' . $config['URL'] . '/cart');
+            mysqli_close($connection);
             exit();
         }
     } else {
         header('location: ' . $config['URL'] . '/user/verify');
+        mysqli_close($connection);
         exit();
     }
 } else {
     if (isset($_SERVER['HTTP_REFERER'])) {
         header('location: ' . $_SERVER['HTTP_REFERER']);
+        mysqli_close($connection);
         exit();
     } else {
         header('location: ' . $config['URL'] . '/user/login');
+        mysqli_close($connection);
         exit();
     }
 }

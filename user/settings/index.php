@@ -63,7 +63,8 @@ if (isset($_SESSION['isLoggedin'])) {
                                 session_unset();
                                 session_destroy();
                                 header('location: ' . $config['URL'] . '/user/login');
-                                exit();
+        mysqli_close($connection);
+        exit();
                             }
                         }
                     }
@@ -78,7 +79,8 @@ if (isset($_SESSION['isLoggedin'])) {
                 session_unset();
                 session_destroy();
                 header('location: ' . $config['URL'] . '/user/login');
-                exit();
+        mysqli_close($connection);
+        exit();
             }
         }
         if (isset($_POST['submit']) && isset($_POST['password'])) {
@@ -141,7 +143,8 @@ if (isset($_SESSION['isLoggedin'])) {
                             $_SESSION['user-country'] = ($_SESSION['user-country'] != $_POST['country']) ? $_POST['country'] : $_SESSION['user-country'];
                             $_SESSION['user-city'] = ($_SESSION['user-city'] != $_POST['city']) ? $_POST['city'] : $_SESSION['user-city'];
                             header('location: ' . $config['URL'] . '/user/settings');
-                            exit();
+        mysqli_close($connection);
+        exit();
                         }
                     }
                 }
@@ -149,14 +152,17 @@ if (isset($_SESSION['isLoggedin'])) {
         }
     } else {
         header('location: ' . $config['URL'] . '/user/verify');
+        mysqli_close($connection);
         exit();
     }
 } else {
     if (isset($_SERVER['HTTP_REFERER'])) {
         header('location: ' . $_SERVER['HTTP_REFERER']);
+        mysqli_close($connection);
         exit();
     } else {
         header('location: ' . $config['URL']);
+        mysqli_close($connection);
         exit();
     }
 }

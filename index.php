@@ -12,6 +12,7 @@
                 $total  = mysqli_num_rows($result);
                 if ($total == 1) {
                     header('location: '. $config['URL'].'/cart');
+                    mysqli_close($connection);
                     exit();
                 } else {
                     $sql2 = "INSERT INTO `cart` (`user_id`, `plant_id`, `Quantity`) 
@@ -19,15 +20,18 @@
                     $result2 = mysqli_query($connection,$sql2);
                     if ($result2) {
                         header('location: '. $config['URL'].'/cart');
+                        mysqli_close($connection);
                         exit();
                     }
                 }
             } else {
                 header('location: '. $config['URL'].'/user/verify');
+                mysqli_close($connection);
                 exit();
             }
         } else {
             header('location: '. $config['URL'].'/user/login');
+            mysqli_close($connection);
             exit();
         }
     }

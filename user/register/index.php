@@ -1,5 +1,11 @@
 <?php
 require('../../config.php');
+require '../../vendor/phpmailer/Exception.php';
+require '../../vendor/phpmailer/PHPMailer.php';
+require '../../vendor/phpmailer/SMTP.php';
+
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
 session_start();
 
 function IsAlphabetic($str)
@@ -101,10 +107,58 @@ if (!isset($_SESSION['isLoggedin'])) {
             $query = mysqli_query($connection, $sql);
             if ($query) {
               header("location: " . $config['URL'] . "/thanks_register.php");
-              exit();
+              $sql = "SELECT * FROM `codes` WHERE `mail` = '$email' AND `type` = 'verify'";
+              $result = mysqli_query($connection, $sql);
+              $total  = mysqli_num_rows($result);
+              if ($total >= 1) {
+        mysqli_close($connection);
+        exit();
+              } else {
+                GenerateCode:
+                $randomNumber = mt_rand(100000, 999999);
+                $sql2 = "SELECT * FROM `codes` WHERE `mail`= '$email' AND `type`='verify' AND `code`= '$randomNumber'";
+                $result2 = mysqli_query($connection, $sql2);
+                $total2  = mysqli_num_rows($result2);
+                if ($total2 == 1) {
+                    goto GenerateCode;
+                } else {
+                    $sql3 = "INSERT INTO `codes`( `mail`, `type`, `code`) VALUES (
+                        '$email', 'verify','$randomNumber')";
+                    $query = mysqli_query($connection, $sql3);
+                    if ($query) {
+                        $mail = new PHPMailer(true);
+                        try {
+                            $mail->isSMTP();
+                            $mail->Host       = 'smtp.gmail.com';
+                            $mail->SMTPAuth   = true;
+                            $mail->Username   = 'mr.tgamer247797704@gmail.com';
+                            $mail->Password   = 'seasiuyldxhdnahs';
+                            $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+                            $mail->Port       = 587;
+                            // Recipients
+                            $mail->setFrom('mr.tgamer247797704@gmail.com', 'NoReply - Verification Code');
+                            $mail->addAddress($email, $username); // Email and name of recipient
+
+                            // Content
+                            $mail->isHTML(true); // Set email format to HTML
+                            $mail->Subject = 'Email Verification';
+                            $mail->Body    = 'This is Your Code:' . $randomNumber;
+
+                            $mail->send();
+                        } catch (Exception $e) {
+                            // goto  SkipChecks;
+                        }
+                    }
+                    // SkipChecks:
+                    // header('location: '.$config['URL'].'/user/verify');
+        mysqli_close($connection);
+        exit();
+                }
+              }
             } else {
               echo "<script>alert('Failed To Register');</script>";
-              exit();
+        mysqli_close($connection);
+        exit();
             }
           }
         }
@@ -116,10 +170,12 @@ if (!isset($_SESSION['isLoggedin'])) {
 } else {
   if (isset($_SERVER['HTTP_REFERER'])) {
     header('location: ' . $_SERVER['HTTP_REFERER']);
-    exit();
+        mysqli_close($connection);
+        exit();
   } else {
     header('location: ' . $config['URL']);
-    exit();
+        mysqli_close($connection);
+        exit();
   }
 }
 ?>
@@ -725,3 +781,7 @@ if (!isset($_SESSION['isLoggedin'])) {
 </body>
 
 </html>
+
+<?php
+    mysqli_close($connection);
+?>
