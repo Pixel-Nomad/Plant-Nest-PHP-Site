@@ -1,6 +1,52 @@
 <?php
 require('../../config.php');
 session_start();
+
+function IsAlphabetic($str)
+{
+  return preg_match('/[a-zA-Z]/', $str);
+}
+
+function IsNumbers($str)
+{
+  return preg_match('/[0-9]/', $str);
+}
+
+function IsSpecial($str)
+{
+  return preg_match('/[^a-zA-Z0-9\s]/', $str);
+}
+
+function IsSpaces($str)
+{
+  return strpos($str, ' ') !== false;
+}
+
+function IsWhiteSpace($str)
+{
+  return preg_match('/\s/', $str);
+}
+
+function IsStartWithAlphaBetic($str)
+{
+  if (empty($str)) {
+    return false;
+  }
+
+  $firstChar = $str[0];
+
+  return preg_match('/[a-zA-Z]/', $firstChar);
+}
+
+$default_username = "";
+$default_fullname = "";
+$default_email = "";
+$default_contact = "";
+$default_comapny = "";
+$default_address = "";
+$default_country = "";
+$default_city = "";
+
 if (!isset($_SESSION['isLoggedin'])) {
 
   session_unset();
@@ -9,6 +55,14 @@ if (!isset($_SESSION['isLoggedin'])) {
 
   if ($connection) {
     if (isset($_POST['submit'])) {
+      $default_username = $_POST['username'];
+      $default_fullname = $_POST['fullname'];
+      $default_email = $_POST['email'];
+      $default_contact = $_POST['contact'];
+      $default_comapny = $_POST['comapny'];
+      $default_address = $_POST['address'];
+      $default_country = $_POST['country'];
+      $default_city = $_POST['city'];
       $username    = $_POST['username'];
       $fullname    = $_POST['fullname'];
       $email       = $_POST['email'];
@@ -35,16 +89,23 @@ if (!isset($_SESSION['isLoggedin'])) {
             }
           }
         }
-        if ($password == $password2 && $unique && $unique2) {
-          $sql = "INSERT INTO `users`( `username`, `fullname`, `email`, `contact`, `company`, `address`, `country`, `city`, `password`) VALUES (
-                '$username','$fullname','$email','$contact','$comapny','$address','$country','$city','$encrypt')";
-          $query = mysqli_query($connection, $sql);
-          if ($query) {
-            header("location: " . $config['URL'] . "/thanks_register.php");
-            exit();
-          } else {
-            echo "<script>alert('Failed To Register');</script>";
-            exit();
+        if (
+          IsStartWithAlphaBetic($username) && !IsSpecial($username) && !IsSpaces($username) && !IsWhiteSpace($username) &&
+          !IsNumbers($fullname) && !IsSpecial($fullname) &&
+          !IsAlphabetic($contact) && !IsSpecial($contact) && !IsSpaces($contact) && !IsWhiteSpace($contact) &&
+          !IsNumbers($city) && !IsSpecial($city)
+        ){
+          if ($password == $password2 && $unique && $unique2) {
+            $sql = "INSERT INTO `users`( `username`, `fullname`, `email`, `contact`, `company`, `address`, `country`, `city`, `password`) VALUES (
+                  '$username','$fullname','$email','$contact','$comapny','$address','$country','$city','$encrypt')";
+            $query = mysqli_query($connection, $sql);
+            if ($query) {
+              header("location: " . $config['URL'] . "/thanks_register.php");
+              exit();
+            } else {
+              echo "<script>alert('Failed To Register');</script>";
+              exit();
+            }
           }
         }
       }
@@ -137,11 +198,11 @@ if (!isset($_SESSION['isLoggedin'])) {
         if (isset($_SESSION['isLoggedin'])) {
         ?>
           <ul class="navbar-nav">
-          <li class="nav-item">
-                        <a class="nav-link text-light">
-                          Welcome <strong><?php echo $_SESSION['user-username'];?></strong>
-                        </a>
-                    </li>
+            <li class="nav-item">
+              <a class="nav-link text-light">
+                Welcome <strong><?php echo $_SESSION['user-username']; ?></strong>
+              </a>
+            </li>
             <li class="nav-item">
               <a class="nav-link text-light" href='<?php echo $config['URL'] ?>/cart/'>
                 <i class="fas fa-shopping-cart"></i>
@@ -188,33 +249,58 @@ if (!isset($_SESSION['isLoggedin'])) {
               <div class="row row-cols-1 row-cols-md-2 m-4">
                 <div class="col">
                   <div class="form-floating mb-3">
-                    <input type="text" class="form-control" required name="username" id="floatingInput" placeholder="name@example.com">
+                    <input type="text" value="<?php echo $default_username; ?>" class="form-control" required name="username" id="floatingInput" placeholder="name@example.com">
                     <label for="floatingInput">Username</label>
                     <p class="card-text text-danger"><?php
                                                       if (isset($_POST['submit'])) {
                                                         $username       = $_POST['username'];
-                                                        $search      = "SELECT * FROM users WHERE username='" . $username . "'";
-                                                        $result      = mysqli_query($connection, $search);
-                                                        $unique      = true;
-                                                        if ($result) {
-                                                          while ($row = mysqli_fetch_assoc($result)) {
-                                                            if ($row['username'] == $username) {
-                                                              $unique = false;
+                                                        
+                                                        if (!IsStartWithAlphaBetic($username)){
+                                                          echo 'Username must startwith alphabet';
+                                                        } else {
+                                                          if (IsSpaces($username) && IsWhiteSpace($username)){
+                                                            echo 'Make sure there are no spaces in username';
+                                                          } else {
+                                                            if (IsSpecial($username)) {
+                                                              echo 'Make sure there are no special characters in username';
+                                                            } else {
+                                                              $search      = "SELECT * FROM users WHERE username='" . $username . "'";
+                                                              $result      = mysqli_query($connection, $search);
+                                                              $unique      = true;
+                                                              if ($result) {
+                                                                while ($row = mysqli_fetch_assoc($result)) {
+                                                                  if ($row['username'] == $username) {
+                                                                    $unique = false;
+                                                                  }
+                                                                }
+                                                              }
+                                                              if (!$unique) {
+                                                                echo 'Username Already Taken';
+                                                              }
                                                             }
                                                           }
-                                                        }
-                                                        if (!$unique) {
-                                                          echo 'Username Already Taken';
                                                         }
                                                       }
                                                       ?></p>
                   </div>
                   <div class="form-floating mb-3">
-                    <input type="text" class="form-control" required name="fullname" id="floatingInput" placeholder="name@example.com">
+                    <input type="text" value="<?php echo $default_fullname; ?>" class="form-control" required name="fullname" id="floatingInput" placeholder="name@example.com">
                     <label for="floatingInput">Full Name</label>
+                    <p class="card-text text-danger"><?php
+                                                      if (isset($_POST['submit'])) {
+                                                        
+                                                        if (IsNumbers($default_fullname)){
+                                                          echo 'Make sure there are no numbers in fullname';
+                                                        } else {
+                                                          if (IsSpecial($default_fullname)){
+                                                            echo 'Make sure there are no special characters in fullname';
+                                                          }
+                                                        }
+                                                      }
+                                                      ?></p>
                   </div>
                   <div class="form-floating mb-3">
-                    <input type="email" class="form-control" required name="email" id="floatingInput" placeholder="name@example.com">
+                    <input type="email" value="<?php echo $default_email; ?>" class="form-control" required name="email" id="floatingInput" placeholder="name@example.com">
                     <label for="floatingInput">Email address</label>
                     <p class="card-text text-danger"><?php
                                                       if (isset($_POST['submit'])) {
@@ -242,7 +328,7 @@ if (!isset($_SESSION['isLoggedin'])) {
                   <div class="form-floating mb-3">
                     <input type="password" class="form-control" required name="password2" id="floatingPassword" placeholder="Password">
                     <label for="floatingPassword">Re-Enter Password</label>
-                    <p class="card-text mt-2 mb-3">Enter Password That Contain Atleat 6 Characters</p>
+                    <p class="card-text mt-2 mb-3">Enter Password That Contain Atleast 6 Characters</p>
                     <p class="card-text text-danger"><?php
                                                       if (isset($_POST['submit']) && isset($_POST['password'])) {
                                                         $password    = strval($_POST['password']);
@@ -260,20 +346,46 @@ if (!isset($_SESSION['isLoggedin'])) {
                 </div>
                 <div class="col">
                   <div class="form-floating mb-3">
-                    <input type="number" class="form-control" required name="contact" id="floatingInput" placeholder="name@example.com">
+                    <input type="text" maxlength="11" value="<?php echo $default_contact; ?>" class="form-control" required name="contact" id="floatingInput" placeholder="name@example.com">
                     <label for="floatingInput">Contact Number</label>
+                    <p class="card-text text-danger"><?php
+                                                      if (isset($_POST['submit'])) {
+                                                        
+                                                        if (IsAlphabetic($default_contact)){
+                                                          echo 'Make sure there are no Alphabets in contact';
+                                                        } else {
+                                                          if (IsSpecial($default_contact)){
+                                                            echo 'Make sure there are no special characters in contact';
+                                                          } else {
+                                                            if (IsSpaces($default_contact) && IsWhiteSpace($default_contact)){
+                                                              echo 'Make sure there are no spaces in contact';
+                                                            }
+                                                          }
+                                                        }
+                                                      }
+                                                      ?></p>
                   </div>
                   <div class="form-floating mb-3">
-                    <input type="text" class="form-control" name="comapny" id="floatingInput" placeholder="name@example.com">
+                    <input type="text" value="<?php echo $default_comapny; ?>" class="form-control" name="comapny" id="floatingInput" placeholder="name@example.com">
                     <label for="floatingInput">Company Name</label>
                   </div>
                   <div class="form-floating mb-3">
-                    <input type="text" class="form-control" required name="address" id="floatingInput" placeholder="name@example.com">
+                    <input type="text" value="<?php echo $default_address; ?>" class="form-control" required name="address" id="floatingInput" placeholder="name@example.com">
                     <label for="floatingInput">Address</label>
                   </div>
                   <div class="form-floating mb-3">
                     <select class="form-select" name="country" id="floatingCountry">
-                      <option value="" disabled selected>Select your country</option>
+                      <?php
+                        if ($default_country != ""){
+                      ?>
+                        <option value="<?php echo $default_country; ?>" selected><?php echo $default_country; ?></option>
+                      <?php
+                        } else {
+                      ?>
+                        <option value="" disabled selected>Select Your Country</option>
+                      <?php
+                        }
+                      ?>
                       <option value="Afghanistan">Afghanistan</option>
                       <option value="Aland Islands">Aland Islands</option>
                       <option value="Albania">Albania</option>
@@ -531,8 +643,20 @@ if (!isset($_SESSION['isLoggedin'])) {
                     <label for="floatingCountry">Country</label>
                   </div>
                   <div class="form-floating mb-3">
-                    <input type="text" class="form-control" required name="city" id="floatingInput" placeholder="name@example.com">
+                    <input type="text" value="<?php echo $default_city; ?>" class="form-control" required name="city" id="floatingInput" placeholder="name@example.com">
                     <label for="floatingInput">City</label>
+                    <p class="card-text text-danger"><?php
+                                                      if (isset($_POST['submit'])) {
+                                                        
+                                                        if (IsNumbers($default_city)){
+                                                          echo 'Make sure there are no numbers in city';
+                                                        } else {
+                                                          if (IsSpecial($default_city)){
+                                                            echo 'Make sure there are no special characters in city';
+                                                          }
+                                                        }
+                                                      }
+                                                      ?></p>
                   </div>
                 </div>
               </div>
@@ -573,15 +697,15 @@ if (!isset($_SESSION['isLoggedin'])) {
           </ul>
         </div>
         <div class="col pt-5">
-            <h5>Contact Us</h5>
-            <a href="mailto:mr.tgamer247797704@gmail.com">Email: mr.tgamer247797704@gmail.com</a>
-            <br>
-            <br>
-            <p>Phone: +923082838448</p>
-            <p>Address: Clifton Block 8,Karachi, Pakistan</p>
+          <h5>Contact Us</h5>
+          <a href="mailto:mr.tgamer247797704@gmail.com">Email: mr.tgamer247797704@gmail.com</a>
+          <br>
+          <br>
+          <p>Phone: +923082838448</p>
+          <p>Address: Clifton Block 8,Karachi, Pakistan</p>
         </div>
-       <div class="col pt-5">
-        <a href="https://www.facebook.com/" class="fa fa-facebook pe-2" target="_blank"></a>
+        <div class="col pt-5">
+          <a href="https://www.facebook.com/" class="fa fa-facebook pe-2" target="_blank"></a>
           <a href="https://www.instagram.com/" class="fa fa-instagram pe-2" target="_blank"></a>
           <a href="https://www.twitter.com/" class="fa fa-twitter pe-2" target="_blank"></a>
           <a href="https://www.youtube.com/" class="fa fa-youtube pe-2" target="_blank"></a>
@@ -590,8 +714,8 @@ if (!isset($_SESSION['isLoggedin'])) {
           <a href="#" class="text-white me-3">Privacy Policy</a>
           <a href="#" class="text-white me-3">Terms of Service</a>
           <br>
-          <a href='<?php echo $config['URL']?>/sitemap' class="text-white me-3">Site Map</a>
-       </div>
+          <a href='<?php echo $config['URL'] ?>/sitemap' class="text-white me-3">Site Map</a>
+        </div>
       </div>
 
     </div>

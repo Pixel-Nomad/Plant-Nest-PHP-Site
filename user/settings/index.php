@@ -715,3 +715,7 @@ if (isset($_SESSION['isLoggedin'])) {
 </body>
 
 </html>
+
+<?php
+    mysqli_close($connection);
+?>

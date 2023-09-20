@@ -238,3 +238,7 @@
     <script src="<?php echo $config['URL']?>/assets/js/script.js"></script>
 </body>
 </html>
+
+<?php
+    mysqli_close($connection);
+?>

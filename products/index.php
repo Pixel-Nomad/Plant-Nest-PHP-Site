@@ -471,3 +471,7 @@ if (isset($_POST['submit3']) && isset($_POST['search-type'])) {
 </body>
 
 </html>
+
+<?php
+    mysqli_close($connection);
+?>
